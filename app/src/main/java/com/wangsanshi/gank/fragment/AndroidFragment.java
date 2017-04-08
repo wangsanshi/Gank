@@ -4,7 +4,9 @@ import com.wangsanshi.gank.R;
 
 public class AndroidFragment extends BaseFragment {
 
-   // private OnFragmentInteractionListener mListener;
+    // private OnFragmentInteractionListener mListener;
+    public AndroidFragment() {
+    }
 
     @Override
     public int getLayoutId() {

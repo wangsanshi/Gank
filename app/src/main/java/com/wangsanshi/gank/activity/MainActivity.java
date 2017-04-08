@@ -26,8 +26,6 @@ import com.wangsanshi.gank.fragment.ResourceFragment;
 import com.wangsanshi.gank.fragment.VideoFragment;
 import com.wangsanshi.gank.fragment.WelfareFragment;
 
-import butterknife.BindView;
-
 public class MainActivity extends BaseActivity {
     /*
      * welfare fragment索引
@@ -61,6 +59,7 @@ public class MainActivity extends BaseActivity {
      * front fragment索引
      */
     private static final int FRAGMENT_FRONT_INDEX = 7;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -74,20 +73,17 @@ public class MainActivity extends BaseActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    @BindView(R.id.container)
-    ViewPager mViewPager;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
