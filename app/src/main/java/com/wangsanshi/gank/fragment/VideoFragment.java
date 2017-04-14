@@ -33,6 +33,11 @@ public class VideoFragment extends BaseFragment {
     }
 
     @Override
+    public void initParams() {
+
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG, "onAttach");

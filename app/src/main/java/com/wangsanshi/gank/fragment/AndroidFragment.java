@@ -22,6 +22,11 @@ public class AndroidFragment extends BaseFragment {
         return R.layout.fragment_android;
     }
 
+    @Override
+    public void initParams() {
+
+    }
+
 
     @Override
     public void onAttach(Context context) {

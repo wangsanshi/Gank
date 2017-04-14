@@ -1,35 +1,93 @@
 package com.wangsanshi.gank.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.adapter.WelfareAdapter;
+import com.wangsanshi.gank.entity.WelfareBean;
+import com.wangsanshi.gank.retrofit.GankApiService;
+import com.wangsanshi.gank.retrofit.RetrofitUtil;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link WelfareFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
+import java.io.StringReader;
+
+import butterknife.BindView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class WelfareFragment extends BaseFragment {
     private static final String TAG = "WelfareFragment";
 
-    //   private OnFragmentInteractionListener mListener;
+    private static final int DEFAULT_DATA_COUNT = 10;
+
+    private static final int DEFAULT_DATA_PAGE = 1;
+
+    private WelfareBean welfareBean;
+
+    private WelfareAdapter adapter;
+
+    @BindView(R.id.rv_welfare)
+    RecyclerView rvWelfare;
+
+    @BindView(R.id.srl_welfare)
+    SwipeRefreshLayout srlWelfare;
 
     public WelfareFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public int getLayoutId() {
         return R.layout.fragment_welfare;
+    }
+
+    @Override
+    public void initParams() {
+        getResult(getString(R.string.welfare), DEFAULT_DATA_COUNT, DEFAULT_DATA_PAGE);
+        //Log.e(TAG, "result:" + result);
+//        if (!result.equals("")) {
+//            Gson gson = new Gson();
+//            welfareBean = gson.fromJson(result, WelfareBean.class);
+//            adapter = new WelfareAdapter(getActivity(), welfareBean);
+//        }
+//
+//        rvWelfare.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        rvWelfare.setAdapter(adapter);
+    }
+
+    private void getResult(final String type, int count, int page) {
+        GankApiService service = RetrofitUtil.getRetrofit().create(GankApiService.class);
+        Call<Object> call = service.getResponse(type, count, page);
+
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                //Log.e(TAG, response.body().toString());
+                String result = response.body().toString();
+                Gson gson = new Gson();
+                JsonReader reader = new JsonReader(new StringReader(result));
+                reader.setLenient(true);
+                welfareBean = gson.fromJson(reader, WelfareBean.class);
+                adapter = new WelfareAdapter(getActivity(), welfareBean);
+                rvWelfare.setLayoutManager(new LinearLayoutManager(getActivity()));
+                rvWelfare.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.e(TAG, "onFailure" + t.getMessage());
+            }
+        });
     }
 
     @Override
@@ -98,43 +156,4 @@ public class WelfareFragment extends BaseFragment {
         Log.d(TAG, "onDetach");
     }
 
-    //
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 }

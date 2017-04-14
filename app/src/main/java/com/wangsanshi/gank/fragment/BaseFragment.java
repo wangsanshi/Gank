@@ -14,8 +14,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(getLayoutId(),container,false);
-        ButterKnife.bind(this,rootView);
+        rootView = inflater.inflate(getLayoutId(), container, false);
+        ButterKnife.bind(this, rootView);
+        initParams();
         return rootView;
     }
 
@@ -25,4 +26,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public abstract int getLayoutId();
+
+    public abstract void initParams();
 }
