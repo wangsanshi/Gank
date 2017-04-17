@@ -1,5 +1,6 @@
 package com.wangsanshi.gank.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -45,8 +46,10 @@ public class WelfareBean {
     public static class ResultsBean {
         @SerializedName("_id")
         private String id;
+        @Expose(deserialize = false, serialize = false)
         private String createdAt;
         private String desc;
+        @Expose(deserialize = false, serialize = false)
         private String publishedAt;
         private String source;
         private String type;

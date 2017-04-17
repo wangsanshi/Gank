@@ -11,13 +11,15 @@ import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.entity.WelfareBean;
 
+import java.util.List;
+
 public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.WelfareViewHolder> {
     private Context mContext;
-    private WelfareBean mData;
+    private List<WelfareBean> mDatas;
 
-    public WelfareAdapter(Context context, WelfareBean data) {
+    public WelfareAdapter(Context context, List<WelfareBean> datas) {
         this.mContext = context;
-        this.mData = data;
+        this.mDatas = datas;
     }
 
     @Override
@@ -29,12 +31,15 @@ public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.WelfareV
 
     @Override
     public void onBindViewHolder(WelfareViewHolder holder, int position) {
-        Glide.with(mContext).load(mData.getResults().get(position).getUrl()).into(holder.iv);
+        Glide.with(mContext)
+                .load(mDatas.get(position / 10).getResults().get(position % 10).getUrl())
+                .into(holder.iv);
+
     }
 
     @Override
     public int getItemCount() {
-        return mData.getResults().size();
+        return mDatas.size() * 10;
     }
 
     public class WelfareViewHolder extends RecyclerView.ViewHolder {
