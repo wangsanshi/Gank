@@ -1,20 +1,24 @@
 package com.wangsanshi.gank.fragment;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.activity.ShowImageActivity;
 import com.wangsanshi.gank.adapter.WelfareAdapter;
 import com.wangsanshi.gank.entity.WelfareBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
+import com.wangsanshi.gank.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +32,8 @@ public class WelfareFragment extends BaseFragment {
     private static final String TAG = "WelfareFragment";
 
     private static final int DEFAULT_ITEM_COUNT = 10;
+
+    private static final int DEFAULT_PAGE_COUNT = 1;
 
     private static final int RESULT = 0;
 
@@ -55,10 +61,15 @@ public class WelfareFragment extends BaseFragment {
     public void initParams() {
         datas = new ArrayList<>();
         srlWelfare.setRefreshing(true);
-        adapter = new WelfareAdapter(getActivity(), datas);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(
-                getActivity(), LinearLayoutManager.VERTICAL, false);
-        rvWelfare.setLayoutManager(layoutManager);
+        adapter = new WelfareAdapter(getActivity().getApplicationContext(), datas);
+        adapter.setOnItemClickListener(new WelfareAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                startActivity(new Intent(getActivity(), ShowImageActivity.class));
+            }
+        });
+
+        rvWelfare.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvWelfare.setAdapter(adapter);
         rvWelfare.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -69,14 +80,12 @@ public class WelfareFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                int totalItemCount = layoutManager.getItemCount();
-
-                if (lastVisibleItem >= (totalItemCount - 1) && dy < 0) {
+                if (ViewUtil.isSlideToBottom(rvWelfare)) {
                     getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, ++page);
                 }
             }
         });
+
         if (NetworkUtil.networkIsConnected(getActivity())) {
             getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, page);
         } else {
@@ -85,7 +94,7 @@ public class WelfareFragment extends BaseFragment {
         srlWelfare.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, page);
+                getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, DEFAULT_PAGE_COUNT);
             }
         });
     }
@@ -105,7 +114,10 @@ public class WelfareFragment extends BaseFragment {
         Gson gson = new Gson();
         WelfareBean welfareBean = gson.fromJson(result, WelfareBean.class);
         datas.add(welfareBean);
-        adapter.notifyDataSetChanged();
+        for (int i = (datas.size() - 1) * 10; i < datas.size() * 10; i++) {
+            Log.e(TAG, "i = " + i);
+            adapter.notifyItemInserted(i);
+        }
     }
 
     private void getResult(final String type, int count, int page) {
