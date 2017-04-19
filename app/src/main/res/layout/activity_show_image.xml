@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_show"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
@@ -9,6 +10,7 @@
         android:id="@+id/iv_content_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:gravity="center"
         android:keepScreenOn="true"
         android:src="@mipmap/screenshot" />
@@ -34,6 +36,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:alpha="0.6"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_share" />
 
             <ImageButton
@@ -42,6 +46,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:alpha="0.6"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_collection" />
 
             <ImageButton
@@ -50,6 +56,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:alpha="0.6"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_download" />
 
         </LinearLayout>

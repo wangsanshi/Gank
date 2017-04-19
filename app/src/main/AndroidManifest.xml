@@ -31,7 +31,7 @@
             android:name=".activity.ShowImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_show_image"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"></activity>
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

@@ -65,7 +65,11 @@ public class WelfareFragment extends BaseFragment {
         adapter.setOnItemClickListener(new WelfareAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(getActivity(), ShowImageActivity.class));
+                Intent intent = new Intent(getActivity(), ShowImageActivity.class);
+                String url = datas.get(position / 10).getResults().get(position % 10).getUrl();
+                intent.putExtra("url", url);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             }
         });
 
