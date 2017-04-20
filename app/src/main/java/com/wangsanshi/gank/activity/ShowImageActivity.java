@@ -85,6 +85,7 @@ public class ShowImageActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 
     private void toggle() {
