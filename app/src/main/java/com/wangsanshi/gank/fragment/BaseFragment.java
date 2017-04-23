@@ -1,6 +1,7 @@
 package com.wangsanshi.gank.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,4 +29,12 @@ public abstract class BaseFragment extends Fragment {
     public abstract int getLayoutId();
 
     public abstract void initParams();
+
+    public void showShortSnackbar(String content) {
+        Snackbar.make(rootView, content, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void showLongSnackbar(String content) {
+        Snackbar.make(rootView, content, Snackbar.LENGTH_LONG).show();
+    }
 }

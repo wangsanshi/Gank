@@ -6,6 +6,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitUtil {
+    public static final int RESPONSE_SUCCESS = 0;
+
     private static Retrofit retrofit;
 
     public static Retrofit getRetrofit() {

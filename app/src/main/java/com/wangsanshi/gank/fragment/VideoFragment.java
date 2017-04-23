@@ -1,31 +1,44 @@
 package com.wangsanshi.gank.fragment;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.adapter.VideoRvAdapter;
+import com.wangsanshi.gank.entity.VideoBean;
+import com.wangsanshi.gank.retrofit.GankApiService;
+import com.wangsanshi.gank.retrofit.RetrofitUtil;
+import com.wangsanshi.gank.view.DividerItemDecoration;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link VideoFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class VideoFragment extends BaseFragment {
     private static final String TAG = "VideoFragment";
 
+    private List<VideoBean> datas;
+
+    private VideoRvAdapter adapter;
+
+    @BindView(R.id.rv_video)
+    RecyclerView rvVideo;
+
+    @BindView(R.id.srl_video)
+    SwipeRefreshLayout srlVideo;
+
     public VideoFragment() {
-
     }
-
-    //  private OnFragmentInteractionListener mListener;
 
     @Override
     public int getLayoutId() {
@@ -34,111 +47,53 @@ public class VideoFragment extends BaseFragment {
 
     @Override
     public void initParams() {
+        datas = new ArrayList<>();
+        adapter = new VideoRvAdapter(getActivity().getApplicationContext(), datas);
 
+        rvVideo.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvVideo.addItemDecoration(new DividerItemDecoration(getActivity()));
+        rvVideo.setAdapter(adapter);
+
+        getResult(getString(R.string.video), 10, 1);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d(TAG, "onAttach");
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == RetrofitUtil.RESPONSE_SUCCESS) {
+                setRvData(msg.obj.toString());
+            }
+            return false;
+        }
+    });
+
+    private void getResult(String type, int count, int page) {
+        GankApiService service = RetrofitUtil.getRetrofit().create(GankApiService.class);
+        Call<JsonObject> call = service.getResponse(type, count, page);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Message message = Message.obtain();
+                message.what = RetrofitUtil.RESPONSE_SUCCESS;
+                message.obj = response.body().toString();
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e(TAG, t.getMessage());
+            }
+        });
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+    private void setRvData(String result) {
+        Gson gson = new Gson();
+        VideoBean videoBean = gson.fromJson(result, VideoBean.class);
+        datas.add(videoBean);
+        for (int i = (datas.size() - 1) * 10; i < datas.size() * 10; i++) {
+            Log.e(TAG, "i = " + i);
+            adapter.notifyItemInserted(i);
+        }
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach");
-    }
-//
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 }

@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.activity.ShowImageActivity;
-import com.wangsanshi.gank.adapter.WelfareAdapter;
+import com.wangsanshi.gank.adapter.WelfareRvAdapter;
 import com.wangsanshi.gank.entity.WelfareBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
@@ -35,13 +35,11 @@ public class WelfareFragment extends BaseFragment {
 
     private static final int DEFAULT_PAGE_COUNT = 1;
 
-    private static final int RESULT = 0;
-
     private static int page = 1;
 
     private List<WelfareBean> datas;
 
-    private WelfareAdapter adapter;
+    private WelfareRvAdapter adapter;
 
     @BindView(R.id.rv_welfare)
     RecyclerView rvWelfare;
@@ -61,8 +59,8 @@ public class WelfareFragment extends BaseFragment {
     public void initParams() {
         datas = new ArrayList<>();
         srlWelfare.setRefreshing(true);
-        adapter = new WelfareAdapter(getActivity().getApplicationContext(), datas);
-        adapter.setOnItemClickListener(new WelfareAdapter.OnItemClickListener() {
+        adapter = new WelfareRvAdapter(getActivity().getApplicationContext(), datas);
+        adapter.setOnItemClickListener(new WelfareRvAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), ShowImageActivity.class);
@@ -106,7 +104,7 @@ public class WelfareFragment extends BaseFragment {
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if (msg.what == RESULT) {
+            if (msg.what == RetrofitUtil.RESPONSE_SUCCESS) {
                 setRvData((String) msg.obj);
             }
             return false;
@@ -119,7 +117,6 @@ public class WelfareFragment extends BaseFragment {
         WelfareBean welfareBean = gson.fromJson(result, WelfareBean.class);
         datas.add(welfareBean);
         for (int i = (datas.size() - 1) * 10; i < datas.size() * 10; i++) {
-            Log.e(TAG, "i = " + i);
             adapter.notifyItemInserted(i);
         }
     }
@@ -133,7 +130,7 @@ public class WelfareFragment extends BaseFragment {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.d(TAG, response.body().toString());
                 Message message = Message.obtain();
-                message.what = RESULT;
+                message.what = RetrofitUtil.RESPONSE_SUCCESS;
                 message.obj = response.body().toString();
                 handler.sendMessage(message);
             }

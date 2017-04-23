@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VideoView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_vv_video"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="8dp" />
+    android:orientation="vertical">
+
+    <VideoView
+        android:id="@+id/item_vv_video"
+        android:layout_width="match_parent"
+        android:layout_height="180dp" />
+
+    <TextView
+        android:id="@+id/item_tv_desc_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:alpha="0.87"
+        android:lineSpacingExtra="8dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        tools:text="万一能在绝望的时候抓住些什么，所以用力地活着" />
+
+    <TextView
+        android:id="@+id/item_tv_who_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0.54"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        tools:text="Candy World · 2个月前" />
+</LinearLayout>

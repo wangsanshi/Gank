@@ -13,14 +13,14 @@ import com.wangsanshi.gank.entity.WelfareBean;
 
 import java.util.List;
 
-public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.WelfareViewHolder> {
+public class WelfareRvAdapter extends RecyclerView.Adapter<WelfareRvAdapter.WelfareViewHolder> {
     private OnItemClickListener onItemClickListener;
 
     private Context mContext;
     private List<WelfareBean> mDatas;
     private LayoutInflater mInflater;
 
-    public WelfareAdapter(Context context, List<WelfareBean> datas) {
+    public WelfareRvAdapter(Context context, List<WelfareBean> datas) {
         this.mContext = context;
         this.mDatas = datas;
         this.mInflater = LayoutInflater.from(context);
