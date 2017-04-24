@@ -27,13 +27,13 @@ import butterknife.BindView;
 public class MainActivity extends BaseActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    @BindView(R.id.container)
+    @BindView(R.id.container_main)
     ViewPager mViewPager;
 
-    @BindView(R.id.toolbar)
+    @BindView(R.id.toolbar_main)
     Toolbar toolbar;
 
-    @BindView(R.id.tabs)
+    @BindView(R.id.tabs_main)
     TabLayout tabLayout;
 
     @BindView(R.id.dl_main)

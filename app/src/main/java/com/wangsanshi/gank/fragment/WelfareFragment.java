@@ -31,9 +31,9 @@ import retrofit2.Response;
 public class WelfareFragment extends BaseFragment {
     private static final String TAG = "WelfareFragment";
 
-    private static final int DEFAULT_ITEM_COUNT = 10;
+    private static final int DEFAULT_WELFARE_ITEM_COUNT = 10;
 
-    private static final int DEFAULT_PAGE_COUNT = 1;
+    private static final int DEFAULT_WELFARE_PAGE = 1;
 
     private static int page = 1;
 
@@ -75,28 +75,23 @@ public class WelfareFragment extends BaseFragment {
         rvWelfare.setAdapter(adapter);
         rvWelfare.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (ViewUtil.isSlideToBottom(rvWelfare)) {
-                    getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, ++page);
+                    getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, ++page);
                 }
             }
         });
 
         if (NetworkUtil.networkIsConnected(getActivity())) {
-            getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, page);
+            getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, page);
         } else {
             srlWelfare.setRefreshing(false);
         }
         srlWelfare.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getResult(getString(R.string.welfare), DEFAULT_ITEM_COUNT, DEFAULT_PAGE_COUNT);
+                getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, DEFAULT_WELFARE_PAGE);
             }
         });
     }

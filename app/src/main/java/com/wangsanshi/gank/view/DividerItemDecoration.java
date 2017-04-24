@@ -14,10 +14,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable divider;
 
-    private Context context;
-
     public DividerItemDecoration(Context context) {
-        this.context = context;
         final TypedArray typedArray = context.obtainStyledAttributes(ATTRS);
         this.divider = typedArray.getDrawable(0);
         typedArray.recycle();
@@ -25,10 +22,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        drawHorizontalLine(c, parent, state);
+        drawHorizontalLine(c, parent);
     }
 
-    private void drawHorizontalLine(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    private void drawHorizontalLine(Canvas c, RecyclerView parent) {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -38,7 +35,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) childView.getLayoutParams();
 
-            int top = childView.getBottom() + params.bottomMargin;
+            int top = childView.getBottom() + params.bottomMargin / 2;
             int bottom = top + divider.getIntrinsicHeight();
 
             divider.setBounds(left, top, right, bottom);

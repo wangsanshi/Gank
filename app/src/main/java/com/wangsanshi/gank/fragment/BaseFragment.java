@@ -30,11 +30,7 @@ public abstract class BaseFragment extends Fragment {
 
     public abstract void initParams();
 
-    public void showShortSnackbar(String content) {
-        Snackbar.make(rootView, content, Snackbar.LENGTH_SHORT).show();
-    }
-
-    public void showLongSnackbar(String content) {
-        Snackbar.make(rootView, content, Snackbar.LENGTH_LONG).show();
+    public void showLongSnackbar(View view,String content) {
+        Snackbar.make(view, content, Snackbar.LENGTH_LONG).show();
     }
 }
