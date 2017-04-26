@@ -1,8 +1,15 @@
 package com.wangsanshi.gank.activity;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -10,12 +17,34 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.fragment.WelfareFragment;
+import com.wangsanshi.gank.retrofit.GankApiService;
+import com.wangsanshi.gank.retrofit.RetrofitUtil;
+import com.wangsanshi.gank.util.NetworkUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ShowImageActivity extends BaseActivity {
+    private static final String TAG = "ShowImageActivity";
+    /*
+     * 动画的延迟时间
+     */
     private static final int UI_ANIMATION_DELAY = 100;
+
+    private static final int PERMISSION_REQUEST_CODE = 0;
+
+    public static final String COLLECTION_SPF_NAME = "collection";
 
     @BindView(R.id.iv_content_show)
     ImageView ivContent;
@@ -33,6 +62,12 @@ public class ShowImageActivity extends BaseActivity {
     LinearLayout llContent;
 
     private boolean mVisible;
+
+    private String imageUrl;
+
+    private String imageId;
+
+    private ResponseBody body;
 
     private final Handler mHandler = new Handler();
 
@@ -64,22 +99,127 @@ public class ShowImageActivity extends BaseActivity {
 
     @Override
     public void initParams() {
+        imageUrl = getIntent().getExtras().getString(WelfareFragment.IMAGE_URL);
+        imageId = getIntent().getExtras().getString(WelfareFragment.IMAGE_ID);
+
         mVisible = false;
         llContent.setVisibility(View.GONE);
         Glide.with(getApplicationContext())
-                .load(getIntent().getExtras().getString("url"))
+                .load(imageUrl)
                 .into(ivContent);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
-        ivContent.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        ivContent.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
     @OnClick(R.id.fl_show)
     public void showBtn() {
         toggle();
+    }
+
+    @OnClick(R.id.btn_share_show)
+    public void share(View view) {
+
+    }
+
+    @OnClick(R.id.btn_collection_show)
+    public void collection(View view) {
+        SharedPreferences.Editor editor = getSharedPreferences(COLLECTION_SPF_NAME,MODE_PRIVATE).edit();
+        editor.putString(imageId,imageUrl);
+        editor.apply();
+        showLongToast(getString(R.string.collection_success));
+    }
+
+    @OnClick(R.id.btn_download_show)
+    public void download(View view) {
+        if(NetworkUtil.networkIsConnected(this)){
+            downLoadImageToDisk(imageUrl);
+        }else{
+            showLongToast(getString(R.string.network_not_connected));
+        }
+    }
+    /*
+     * 下载图片
+     */
+    private void downLoadImageToDisk(String imageUrl) {
+        GankApiService service = RetrofitUtil.getRetrofit().create(GankApiService.class);
+        Call<ResponseBody> call = service.downLoadImage(imageUrl);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(ContextCompat.checkSelfPermission(ShowImageActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(ShowImageActivity.this,
+                            new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_CODE);
+                }else{
+                    body = response.body();
+                    saveImage(body);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                showLongToast(getString(R.string.download_failure));
+            }
+        });
+    }
+    /*
+     * 将下载的图片保存到SD卡
+     */
+    private void saveImage(ResponseBody body) {
+        File imageFile = new File(getExternalFilesDir(null) + File.separator + imageId + ".jpg");
+        Log.e(TAG,getExternalFilesDir(null) + File.separator + imageId + ".jpg");
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try{
+            inputStream = body.byteStream();
+            outputStream = new FileOutputStream(imageFile);
+
+            int temp;
+
+            while((temp = inputStream.read()) != -1){
+                outputStream.write(temp);
+            }
+
+            outputStream.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(outputStream != null){
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        showLongToast(getString(R.string.download_success));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == PERMISSION_REQUEST_CODE){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                saveImage(body);
+            }else{
+                showLongToast(getString(R.string.permission_deny));
+            }
+        }
     }
 
     @Override

@@ -13,19 +13,13 @@ import android.view.MenuItem;
 
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.adapter.SectionsPagerAdapter;
-import com.wangsanshi.gank.fragment.AndroidFragment;
-import com.wangsanshi.gank.fragment.AppFragment;
-import com.wangsanshi.gank.fragment.FrontFragment;
-import com.wangsanshi.gank.fragment.IosFragment;
-import com.wangsanshi.gank.fragment.RecommendFragment;
-import com.wangsanshi.gank.fragment.ResourceFragment;
-import com.wangsanshi.gank.fragment.VideoFragment;
+import com.wangsanshi.gank.fragment.GeneralFragment;
 import com.wangsanshi.gank.fragment.WelfareFragment;
 
 import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    public SectionsPagerAdapter mSectionsPagerAdapter;
 
     @BindView(R.id.container_main)
     ViewPager mViewPager;
@@ -64,14 +58,23 @@ public class MainActivity extends BaseActivity {
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mSectionsPagerAdapter.addFragment(new WelfareFragment(), getString(R.string.welfare));
-        mSectionsPagerAdapter.addFragment(new VideoFragment(), getString(R.string.video));
-        mSectionsPagerAdapter.addFragment(new RecommendFragment(), getString(R.string.recommend));
-        mSectionsPagerAdapter.addFragment(new AppFragment(), getString(R.string.app));
-        mSectionsPagerAdapter.addFragment(new ResourceFragment(), getString(R.string.resource));
-        mSectionsPagerAdapter.addFragment(new AndroidFragment(), getString(R.string.android));
-        mSectionsPagerAdapter.addFragment(new IosFragment(), getString(R.string.ios));
-        mSectionsPagerAdapter.addFragment(new FrontFragment(), getString(R.string.front));
+        mSectionsPagerAdapter.addTitle(getString(R.string.welfare));
+        mSectionsPagerAdapter.addTitle(getString(R.string.video));
+        mSectionsPagerAdapter.addTitle(getString(R.string.recommend));
+        mSectionsPagerAdapter.addTitle(getString(R.string.app));
+        mSectionsPagerAdapter.addTitle(getString(R.string.resource));
+        mSectionsPagerAdapter.addTitle(getString(R.string.android));
+        mSectionsPagerAdapter.addTitle(getString(R.string.ios));
+        mSectionsPagerAdapter.addTitle(getString(R.string.front));
+
+        mSectionsPagerAdapter.addFragment(new WelfareFragment());
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.video)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.recommend)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.app)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.resource)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.android)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.ios)));
+        mSectionsPagerAdapter.addFragment(GeneralFragment.newInstance(getString(R.string.front)));
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -103,6 +106,7 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private class NavigationItemSelected implements NavigationView.OnNavigationItemSelectedListener {
         @Override

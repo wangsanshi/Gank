@@ -22,12 +22,21 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+//        switch (position) {
+//            case 0:
+//                return fragments.get(0);
+//            case 1:
+//                return fragments.get(1);
+//            default:
+//                return fragments.get(2);
+//        }
+
         return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return titles.size();
     }
 
     @Override
@@ -35,8 +44,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return titles.get(position);
     }
 
-    public void addFragment(Fragment fragment, String title) {
+    public void addFragment(Fragment fragment) {
         fragments.add(fragment);
+    }
+
+    public void addTitle(String title) {
         titles.add(title);
     }
 

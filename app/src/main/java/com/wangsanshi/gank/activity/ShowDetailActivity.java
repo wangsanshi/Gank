@@ -1,9 +1,11 @@
 package com.wangsanshi.gank.activity;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import butterknife.BindView;
 
 public class ShowDetailActivity extends BaseActivity {
     private static final String TAG = "ShowDetailActivity";
+
     @BindView(R.id.toolbar_show_detail)
     Toolbar toolbar;
 
@@ -26,6 +29,9 @@ public class ShowDetailActivity extends BaseActivity {
     @BindView(R.id.tv_desc_show_detail)
     TextView tvDesc;
 
+    @BindView(R.id.app_bar_show_detail)
+    AppBarLayout appBarLayout;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_show_detail;
@@ -33,8 +39,18 @@ public class ShowDetailActivity extends BaseActivity {
 
     @Override
     public void initParams() {
-        toolbar.setTitle(getIntent().getExtras().getString("TYPE"));
+
         tvDesc.setText(getIntent().getExtras().getString("DESC"));
+        toolbar.setTitle(getIntent().getExtras().getString("TYPE"));
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+            }
+        });
+
         setSupportActionBar(toolbar);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +62,8 @@ public class ShowDetailActivity extends BaseActivity {
         });
 
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.loadUrl(getIntent().getExtras().getString("URL"));
         webView.setWebViewClient(new WebViewClient() {
@@ -60,5 +78,6 @@ public class ShowDetailActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 }

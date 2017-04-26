@@ -3,6 +3,7 @@ package com.wangsanshi.gank.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 
@@ -19,4 +20,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract int getLayoutId();
 
     public abstract void initParams();
+
+    public void showLongToast(String content){
+        Toast.makeText(this,content,Toast.LENGTH_LONG).show();
+    }
 }

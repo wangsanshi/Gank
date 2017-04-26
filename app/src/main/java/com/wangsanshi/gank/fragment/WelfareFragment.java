@@ -31,6 +31,10 @@ import retrofit2.Response;
 public class WelfareFragment extends BaseFragment {
     private static final String TAG = "WelfareFragment";
 
+    public static final String IMAGE_URL = "image_url";
+
+    public static final String IMAGE_ID = "image_id";
+
     private static final int DEFAULT_WELFARE_ITEM_COUNT = 10;
 
     private static final int DEFAULT_WELFARE_PAGE = 1;
@@ -64,8 +68,10 @@ public class WelfareFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), ShowImageActivity.class);
+                String id = datas.get(position / 10).getResults().get(position % 10).getId();
                 String url = datas.get(position / 10).getResults().get(position % 10).getUrl();
-                intent.putExtra("url", url);
+                intent.putExtra(IMAGE_ID,id);
+                intent.putExtra(IMAGE_URL, url);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             }
