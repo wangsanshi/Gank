@@ -1,5 +1,8 @@
 package com.wangsanshi.gank.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -42,7 +45,7 @@ public class GeneralBean {
         this.results = results;
     }
 
-    public static class ResultsBean {
+    public static class ResultsBean implements Parcelable {
         @SerializedName("_id")
         private String id;
         private String createdAt;
@@ -134,5 +137,52 @@ public class GeneralBean {
         public void setImages(List<String> images) {
             this.images = images;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.id);
+            dest.writeString(this.createdAt);
+            dest.writeString(this.desc);
+            dest.writeString(this.publishedAt);
+            dest.writeString(this.source);
+            dest.writeString(this.type);
+            dest.writeString(this.url);
+            dest.writeByte(this.used ? (byte) 1 : (byte) 0);
+            dest.writeString(this.who);
+            dest.writeStringList(this.images);
+        }
+
+        public ResultsBean() {
+        }
+
+        protected ResultsBean(Parcel in) {
+            this.id = in.readString();
+            this.createdAt = in.readString();
+            this.desc = in.readString();
+            this.publishedAt = in.readString();
+            this.source = in.readString();
+            this.type = in.readString();
+            this.url = in.readString();
+            this.used = in.readByte() != 0;
+            this.who = in.readString();
+            this.images = in.createStringArrayList();
+        }
+
+        public static final Parcelable.Creator<ResultsBean> CREATOR = new Parcelable.Creator<ResultsBean>() {
+            @Override
+            public ResultsBean createFromParcel(Parcel source) {
+                return new ResultsBean(source);
+            }
+
+            @Override
+            public ResultsBean[] newArray(int size) {
+                return new ResultsBean[size];
+            }
+        };
     }
 }

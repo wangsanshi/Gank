@@ -2,8 +2,10 @@ package com.wangsanshi.gank.activity;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -67,6 +69,8 @@ public class ShowImageActivity extends BaseActivity {
 
     private String imageId;
 
+    private String imagePath;
+
     private ResponseBody body;
 
     private final Handler mHandler = new Handler();
@@ -123,25 +127,37 @@ public class ShowImageActivity extends BaseActivity {
 
     @OnClick(R.id.btn_share_show)
     public void share(View view) {
-
+        if (NetworkUtil.networkIsConnected(this)) {
+            downLoadImageToDisk(imageUrl);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            Uri uri = android.net.Uri.fromFile(new File(imagePath));
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setType("image/*");
+            Log.e(TAG, imagePath);
+            startActivity(Intent.createChooser(intent, "share"));
+        } else {
+            showShortToast(getString(R.string.network_not_connected));
+        }
     }
 
     @OnClick(R.id.btn_collection_show)
     public void collection(View view) {
-        SharedPreferences.Editor editor = getSharedPreferences(COLLECTION_SPF_NAME,MODE_PRIVATE).edit();
-        editor.putString(imageId,imageUrl);
+        SharedPreferences.Editor editor = getSharedPreferences(COLLECTION_SPF_NAME, MODE_PRIVATE).edit();
+        editor.putString(imageId, imageUrl);
         editor.apply();
-        showLongToast(getString(R.string.collection_success));
+        showShortToast(getString(R.string.collection_success));
     }
 
     @OnClick(R.id.btn_download_show)
     public void download(View view) {
-        if(NetworkUtil.networkIsConnected(this)){
+        if (NetworkUtil.networkIsConnected(this)) {
             downLoadImageToDisk(imageUrl);
-        }else{
-            showLongToast(getString(R.string.network_not_connected));
+            showShortToast(getString(R.string.download_success));
+        } else {
+            showShortToast(getString(R.string.network_not_connected));
         }
     }
+
     /*
      * 下载图片
      */
@@ -152,12 +168,12 @@ public class ShowImageActivity extends BaseActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(ContextCompat.checkSelfPermission(ShowImageActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED){
+                if (ContextCompat.checkSelfPermission(ShowImageActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(ShowImageActivity.this,
-                            new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE);
-                }else{
+                } else {
                     body = response.body();
                     saveImage(body);
                 }
@@ -165,33 +181,35 @@ public class ShowImageActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                showLongToast(getString(R.string.download_failure));
+                showShortToast(getString(R.string.download_failure));
             }
         });
     }
+
     /*
      * 将下载的图片保存到SD卡
      */
     private void saveImage(ResponseBody body) {
-        File imageFile = new File(getExternalFilesDir(null) + File.separator + imageId + ".jpg");
-        Log.e(TAG,getExternalFilesDir(null) + File.separator + imageId + ".jpg");
+        imagePath = getExternalFilesDir(null) + File.separator + imageId + ".jpg";
+        File imageFile = new File(imagePath);
+        Log.e(TAG, getExternalFilesDir(null) + File.separator + imageId + ".jpg");
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        try{
+        try {
             inputStream = body.byteStream();
             outputStream = new FileOutputStream(imageFile);
 
             int temp;
 
-            while((temp = inputStream.read()) != -1){
+            while ((temp = inputStream.read()) != -1) {
                 outputStream.write(temp);
             }
 
             outputStream.flush();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if(inputStream != null){
+        } finally {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
@@ -199,7 +217,7 @@ public class ShowImageActivity extends BaseActivity {
                 }
             }
 
-            if(outputStream != null){
+            if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
@@ -207,17 +225,15 @@ public class ShowImageActivity extends BaseActivity {
                 }
             }
         }
-
-        showLongToast(getString(R.string.download_success));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == PERMISSION_REQUEST_CODE){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 saveImage(body);
-            }else{
-                showLongToast(getString(R.string.permission_deny));
+            } else {
+                showShortToast(getString(R.string.permission_deny));
             }
         }
     }

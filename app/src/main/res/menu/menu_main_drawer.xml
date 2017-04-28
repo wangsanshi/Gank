@@ -10,15 +10,15 @@
             android:id="@+id/nav_collection"
             android:icon="@drawable/ic_menu_collection"
             android:title="@string/collection" />
-    </group>
 
-    <item android:title="@string/other">
-        <menu>
-            <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_menu_setting"
-                android:title="@string/setting" />
-        </menu>
-    </item>
+        <item android:title="@string/other">
+            <menu>
+                <item android:id="@+id/nav_setting"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_menu_setting"
+                    android:title="@string/setting" />/>
+            </menu>
+        </item>
+    </group>
 
 </menu>

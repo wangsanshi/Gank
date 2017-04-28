@@ -82,6 +82,8 @@ public class GeneralFragment extends BaseFragment {
         currentType = getArguments().getString(FRAGMENT_TYPE);
 
         refreshLayout.setRefreshing(true);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
+        refreshLayout.setSize(SwipeRefreshLayout.LARGE);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

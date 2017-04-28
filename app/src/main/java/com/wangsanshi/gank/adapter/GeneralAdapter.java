@@ -18,13 +18,16 @@ import com.wangsanshi.gank.util.CharacterUtil;
 import java.util.List;
 
 public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.GenneralViewHolder> {
+    /*
+     * 默认每页加载5个子项
+     */
     public static final int DEFAULT_ITEM_COUNT = 5;
 
     private LayoutInflater inflater;
     private Context mContext;
     private List<GeneralBean> mDatas;
 
-    public GeneralAdapter(Context context,List<GeneralBean> datas) {
+    public GeneralAdapter(Context context, List<GeneralBean> datas) {
         this.mContext = context;
         this.inflater = LayoutInflater.from(context);
         this.mDatas = datas;
@@ -32,7 +35,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
 
     @Override
     public GenneralViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GenneralViewHolder(inflater.inflate(R.layout.item_rv_general,parent,false));
+        return new GenneralViewHolder(inflater.inflate(R.layout.item_rv_general, parent, false));
     }
 
     @Override
@@ -47,16 +50,19 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
                     mDatas.get(page).getResults().get(positionInPage).getWho(),
                     CharacterUtil.timeFormat(mDatas.get(page).getResults().get(positionInPage).getPublishedAt())));
         } else {
-            holder.itemTvWho.setText(CharacterUtil.timeFormat(mDatas.get(page).getResults().get(positionInPage).getPublishedAt()));
+            holder.itemTvWho.setText(CharacterUtil
+                    .timeFormat(mDatas.get(page)
+                            .getResults()
+                            .get(positionInPage)
+                            .getPublishedAt()));
         }
 
         holder.itemLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ShowDetailActivity.class);
-                intent.putExtra("TYPE", mDatas.get(page).getResults().get(positionInPage).getType());
-                intent.putExtra("DESC", mDatas.get(page).getResults().get(positionInPage).getDesc());
-                intent.putExtra("URL", mDatas.get(page).getResults().get(positionInPage).getUrl());
+                GeneralBean.ResultsBean resultsBean = mDatas.get(page).getResults().get(positionInPage);
+                intent.putExtra(ShowDetailActivity.DATAS, resultsBean);
                 mContext.startActivity(intent);
                 Activity activity = (Activity) mContext;
                 activity.overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
@@ -69,15 +75,15 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
         return mDatas.size() * DEFAULT_ITEM_COUNT;
     }
 
-    public class GenneralViewHolder extends RecyclerView.ViewHolder{
+    public class GenneralViewHolder extends RecyclerView.ViewHolder {
         public TextView itemTvDesc;
         public TextView itemTvWho;
         public LinearLayout itemLl;
 
         public GenneralViewHolder(View itemView) {
             super(itemView);
-            itemTvDesc =(TextView) itemView.findViewById(R.id.item_tv_desc_general);
-            itemTvWho = (TextView)itemView.findViewById(R.id.item_tv_who_general);
+            itemTvDesc = (TextView) itemView.findViewById(R.id.item_tv_desc_general);
+            itemTvWho = (TextView) itemView.findViewById(R.id.item_tv_who_general);
             itemLl = (LinearLayout) itemView.findViewById(R.id.item_ll_general);
         }
     }

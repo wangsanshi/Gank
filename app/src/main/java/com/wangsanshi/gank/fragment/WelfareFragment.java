@@ -62,7 +62,11 @@ public class WelfareFragment extends BaseFragment {
     @Override
     public void initParams() {
         datas = new ArrayList<>();
+
         srlWelfare.setRefreshing(true);
+        srlWelfare.setColorSchemeResources(R.color.colorAccent);
+        srlWelfare.setSize(SwipeRefreshLayout.LARGE);
+
         adapter = new WelfareRvAdapter(getActivity().getApplicationContext(), datas);
         adapter.setOnItemClickListener(new WelfareRvAdapter.OnItemClickListener() {
             @Override

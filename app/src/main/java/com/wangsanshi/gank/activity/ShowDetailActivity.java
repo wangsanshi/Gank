@@ -1,21 +1,27 @@
 package com.wangsanshi.gank.activity;
 
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.entity.GeneralBean;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class ShowDetailActivity extends BaseActivity {
     private static final String TAG = "ShowDetailActivity";
+
+    public static final String DATAS = "datas";
 
     @BindView(R.id.toolbar_show_detail)
     Toolbar toolbar;
@@ -31,6 +37,14 @@ public class ShowDetailActivity extends BaseActivity {
 
     @BindView(R.id.app_bar_show_detail)
     AppBarLayout appBarLayout;
+    /*
+     * 是否收藏
+     */
+    private boolean isCollection;
+
+    private GeneralBean.ResultsBean resultsBean;
+
+    private SharedPreferences spf;
 
     @Override
     public int getLayoutId() {
@@ -39,45 +53,121 @@ public class ShowDetailActivity extends BaseActivity {
 
     @Override
     public void initParams() {
+        resultsBean = getIntent().getExtras().getParcelable(DATAS);
 
-        tvDesc.setText(getIntent().getExtras().getString("DESC"));
-        toolbar.setTitle(getIntent().getExtras().getString("TYPE"));
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
-            }
-        });
-
-        setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.loadUrl(getIntent().getExtras().getString("URL"));
+        initFabState();
+        initToolBar();
+        initWebViewSettings();
+        initWebView();
+    }
+    /*
+     * 设置WebView加载的url，设置其WebViewClient
+     */
+    private void initWebView() {
+        webView.loadUrl(resultsBean.getUrl());
         webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.toString());
                 return true;
             }
         });
     }
 
+    /*
+     * 设置Toolbar的大标题以及小标题的内容
+     */
+    private void initToolBar() {
+        tvDesc.setText(resultsBean.getDesc());
+        toolbar.setTitle(resultsBean.getType());
+        setSupportActionBar(toolbar);
+    }
+
+    /*
+     * 从SharedPreferences读取FoatingActionButton的状态
+     */
+    private void initFabState() {
+        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME,MODE_PRIVATE);
+        if(spf.getString(resultsBean.getId(),"") != null){
+            fab.setImageResource(R.drawable.ic_fab_pressed);
+            isCollection = true;
+        }else{
+            isCollection = false;
+        }
+    }
+
+    private void initWebViewSettings() {
+        WebSettings settings = webView.getSettings();
+        //支持获取手势焦点
+        webView.requestFocusFromTouch();
+        //支持JS
+        settings.setJavaScriptEnabled(true);
+        //设置适应屏幕
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        //支持缩放
+        settings.setSupportZoom(false);
+        //隐藏原生的缩放控件
+        settings.setDisplayZoomControls(false);
+        //支持内容重新布局
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.supportMultipleWindows();
+        settings.setSupportMultipleWindows(true);
+        //设置缓存模式
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setAppCacheEnabled(true);
+        settings.setAppCachePath(webView.getContext().getCacheDir().getAbsolutePath());
+
+        //设置可访问文件
+        settings.setAllowFileAccess(true);
+        //当webview调用requestFocus时为webview设置节点
+        settings.setNeedInitialFocus(true);
+        //支持自动加载图片
+        if (Build.VERSION.SDK_INT >= 19) {
+            settings.setLoadsImagesAutomatically(true);
+        } else {
+            settings.setLoadsImagesAutomatically(false);
+        }
+        settings.setNeedInitialFocus(true);
+        //设置编码格式
+        settings.setDefaultTextEncodingName("UTF-8");
+    }
+
+    @OnClick(R.id.fab_show_detail)
+    public void collection(View view) {
+        SharedPreferences.Editor editor = spf.edit();
+        if (!isCollection) {
+            editor.putString(resultsBean.getId(),resultsBean.getUrl());
+            fab.setImageResource(R.drawable.ic_fab_pressed);
+            showShortSnackbar(view, getString(R.string.collection_success));
+            isCollection = true;
+        } else {
+            editor.remove(resultsBean.getId());
+            fab.setImageResource(R.drawable.ic_fab_normal);
+            showShortSnackbar(view, getString(R.string.cancel_collection));
+            isCollection = false;
+        }
+        editor.apply();
+    }
+
+    /*
+     * 若WebView有可回退的历史记录，点击返回键则返回上一页；否则，退出当前Activity
+     */
     @Override
     public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            finish();
+            overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        webView.destroy();
     }
 }

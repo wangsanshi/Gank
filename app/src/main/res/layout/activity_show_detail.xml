@@ -53,8 +53,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="12dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
         app:layout_anchor="@id/app_bar_show_detail"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/btn_star" />
+        app:srcCompat="@drawable/ic_fab_normal" />
 
 </android.support.design.widget.CoordinatorLayout>
