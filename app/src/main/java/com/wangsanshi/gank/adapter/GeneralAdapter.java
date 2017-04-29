@@ -62,7 +62,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ShowDetailActivity.class);
                 GeneralBean.ResultsBean resultsBean = mDatas.get(page).getResults().get(positionInPage);
-                intent.putExtra(ShowDetailActivity.DATAS, resultsBean);
+                intent.putExtra(ShowDetailActivity.DATAS_IN_GENERAL, resultsBean);
                 mContext.startActivity(intent);
                 Activity activity = (Activity) mContext;
                 activity.overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);

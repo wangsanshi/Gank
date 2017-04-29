@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -43,7 +42,7 @@ public class GeneralFragment extends BaseFragment {
     RecyclerView recyclerView;
 
     @BindView(R.id.srl_general)
-    SwipeRefreshLayout refreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private GeneralAdapter adapter;
 
@@ -53,7 +52,7 @@ public class GeneralFragment extends BaseFragment {
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == RetrofitUtil.RESPONSE_SUCCESS) {
-                refreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
                 setDataToRv(msg.obj.toString());
             }
             return false;
@@ -78,23 +77,15 @@ public class GeneralFragment extends BaseFragment {
 
     @Override
     public void initParams() {
-
-        currentType = getArguments().getString(FRAGMENT_TYPE);
-
-        refreshLayout.setRefreshing(true);
-        refreshLayout.setColorSchemeResources(R.color.colorAccent);
-        refreshLayout.setSize(SwipeRefreshLayout.LARGE);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                adapter.clearDatas();
-                checkNetwork(currentType, GeneralAdapter.DEFAULT_ITEM_COUNT, DEFAULT_PAGE);
-            }
-        });
-
         datas = new ArrayList<>();
+        currentType = getArguments().getString(FRAGMENT_TYPE);
         adapter = new GeneralAdapter(getActivity(), datas);
+        initSwipeRefreshLayout();
+        initRecyclerView();
+        checkNetwork(currentType, GeneralAdapter.DEFAULT_ITEM_COUNT, DEFAULT_PAGE);
+    }
 
+    private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -107,15 +98,25 @@ public class GeneralFragment extends BaseFragment {
                 }
             }
         });
+    }
 
-        checkNetwork(currentType, GeneralAdapter.DEFAULT_ITEM_COUNT, DEFAULT_PAGE);
+    private void initSwipeRefreshLayout() {
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clearDatas();
+                checkNetwork(currentType, GeneralAdapter.DEFAULT_ITEM_COUNT, DEFAULT_PAGE);
+            }
+        });
     }
 
     private void checkNetwork(String type, int count, int page) {
         if (NetworkUtil.networkIsConnected(getActivity().getApplicationContext())) {
             loadDatas(type, count, page);
         } else {
-            refreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(false);
             showLongSnackbar(getActivity().findViewById(R.id.dl_main), getString(R.string.network_not_connected));
         }
     }
@@ -135,7 +136,6 @@ public class GeneralFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.e(TAG, t.getMessage());
             }
         });
     }

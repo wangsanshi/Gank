@@ -41,6 +41,8 @@ public class WelfareFragment extends BaseFragment {
 
     private static int page = 1;
 
+    private WelfareBean.ResultsBean resultsBean;
+
     private List<WelfareBean> datas;
 
     private WelfareRvAdapter adapter;
@@ -63,24 +65,32 @@ public class WelfareFragment extends BaseFragment {
     public void initParams() {
         datas = new ArrayList<>();
 
+        initSwipeRefreshLayout();
+        initAdapter();
+        initRecylerView();
+        initDatas();
+    }
+
+    private void initDatas() {
+        if (NetworkUtil.networkIsConnected(getActivity())) {
+            getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, page);
+        } else {
+            srlWelfare.setRefreshing(false);
+        }
+    }
+
+    private void initSwipeRefreshLayout() {
         srlWelfare.setRefreshing(true);
         srlWelfare.setColorSchemeResources(R.color.colorAccent);
-        srlWelfare.setSize(SwipeRefreshLayout.LARGE);
-
-        adapter = new WelfareRvAdapter(getActivity().getApplicationContext(), datas);
-        adapter.setOnItemClickListener(new WelfareRvAdapter.OnItemClickListener() {
+        srlWelfare.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getActivity(), ShowImageActivity.class);
-                String id = datas.get(position / 10).getResults().get(position % 10).getId();
-                String url = datas.get(position / 10).getResults().get(position % 10).getUrl();
-                intent.putExtra(IMAGE_ID,id);
-                intent.putExtra(IMAGE_URL, url);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+            public void onRefresh() {
+                getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, DEFAULT_WELFARE_PAGE);
             }
         });
+    }
 
+    private void initRecylerView() {
         rvWelfare.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvWelfare.setAdapter(adapter);
         rvWelfare.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -92,16 +102,18 @@ public class WelfareFragment extends BaseFragment {
                 }
             }
         });
+    }
 
-        if (NetworkUtil.networkIsConnected(getActivity())) {
-            getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, page);
-        } else {
-            srlWelfare.setRefreshing(false);
-        }
-        srlWelfare.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void initAdapter() {
+        adapter = new WelfareRvAdapter(getActivity().getApplicationContext(), datas);
+        adapter.setOnItemClickListener(new WelfareRvAdapter.OnItemClickListener() {
             @Override
-            public void onRefresh() {
-                getResult(getString(R.string.welfare), DEFAULT_WELFARE_ITEM_COUNT, DEFAULT_WELFARE_PAGE);
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), ShowImageActivity.class);
+                resultsBean = datas.get(position / DEFAULT_WELFARE_ITEM_COUNT).getResults().get(position % DEFAULT_WELFARE_ITEM_COUNT);
+                intent.putExtra(ShowImageActivity.DATAS_IN_WELFARE, resultsBean);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             }
         });
     }
@@ -142,7 +154,6 @@ public class WelfareFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
             }
         });
     }

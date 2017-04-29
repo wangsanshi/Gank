@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
-import com.wangsanshi.gank.fragment.WelfareFragment;
+import com.wangsanshi.gank.entity.WelfareBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
@@ -44,6 +44,8 @@ public class ShowImageActivity extends BaseActivity {
      */
     private static final int UI_ANIMATION_DELAY = 100;
 
+    public static final String DATAS_IN_WELFARE = "datas_in_welfare";
+
     private static final int PERMISSION_REQUEST_CODE = 0;
 
     public static final String COLLECTION_SPF_NAME = "collection";
@@ -65,9 +67,7 @@ public class ShowImageActivity extends BaseActivity {
 
     private boolean mVisible;
 
-    private String imageUrl;
-
-    private String imageId;
+    private WelfareBean.ResultsBean resultsBean;
 
     private String imagePath;
 
@@ -103,13 +103,12 @@ public class ShowImageActivity extends BaseActivity {
 
     @Override
     public void initParams() {
-        imageUrl = getIntent().getExtras().getString(WelfareFragment.IMAGE_URL);
-        imageId = getIntent().getExtras().getString(WelfareFragment.IMAGE_ID);
+        resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_WELFARE);
 
         mVisible = false;
         llContent.setVisibility(View.GONE);
         Glide.with(getApplicationContext())
-                .load(imageUrl)
+                .load(resultsBean.getUrl())
                 .into(ivContent);
 
         ActionBar actionBar = getSupportActionBar();
@@ -128,7 +127,7 @@ public class ShowImageActivity extends BaseActivity {
     @OnClick(R.id.btn_share_show)
     public void share(View view) {
         if (NetworkUtil.networkIsConnected(this)) {
-            downLoadImageToDisk(imageUrl);
+            downLoadImageToDisk(resultsBean.getUrl());
             Intent intent = new Intent(Intent.ACTION_SEND);
             Uri uri = android.net.Uri.fromFile(new File(imagePath));
             intent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -143,7 +142,7 @@ public class ShowImageActivity extends BaseActivity {
     @OnClick(R.id.btn_collection_show)
     public void collection(View view) {
         SharedPreferences.Editor editor = getSharedPreferences(COLLECTION_SPF_NAME, MODE_PRIVATE).edit();
-        editor.putString(imageId, imageUrl);
+        editor.putString(resultsBean.getId(), resultsBean.getUrl());
         editor.apply();
         showShortToast(getString(R.string.collection_success));
     }
@@ -151,7 +150,7 @@ public class ShowImageActivity extends BaseActivity {
     @OnClick(R.id.btn_download_show)
     public void download(View view) {
         if (NetworkUtil.networkIsConnected(this)) {
-            downLoadImageToDisk(imageUrl);
+            downLoadImageToDisk(resultsBean.getUrl());
             showShortToast(getString(R.string.download_success));
         } else {
             showShortToast(getString(R.string.network_not_connected));
@@ -190,9 +189,9 @@ public class ShowImageActivity extends BaseActivity {
      * 将下载的图片保存到SD卡
      */
     private void saveImage(ResponseBody body) {
-        imagePath = getExternalFilesDir(null) + File.separator + imageId + ".jpg";
+        imagePath = getExternalFilesDir(null) + File.separator + resultsBean.getId() + ".jpg";
         File imageFile = new File(imagePath);
-        Log.e(TAG, getExternalFilesDir(null) + File.separator + imageId + ".jpg");
+        Log.e(TAG, getExternalFilesDir(null) + File.separator + resultsBean.getId() + ".jpg");
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {

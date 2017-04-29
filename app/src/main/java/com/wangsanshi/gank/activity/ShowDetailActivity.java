@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -21,7 +22,7 @@ import butterknife.OnClick;
 public class ShowDetailActivity extends BaseActivity {
     private static final String TAG = "ShowDetailActivity";
 
-    public static final String DATAS = "datas";
+    public static final String DATAS_IN_GENERAL = "datas_in_general";
 
     @BindView(R.id.toolbar_show_detail)
     Toolbar toolbar;
@@ -38,7 +39,7 @@ public class ShowDetailActivity extends BaseActivity {
     @BindView(R.id.app_bar_show_detail)
     AppBarLayout appBarLayout;
     /*
-     * 是否收藏
+     * 是否已经收藏
      */
     private boolean isCollection;
 
@@ -53,13 +54,14 @@ public class ShowDetailActivity extends BaseActivity {
 
     @Override
     public void initParams() {
-        resultsBean = getIntent().getExtras().getParcelable(DATAS);
+        resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_GENERAL);
 
         initFabState();
         initToolBar();
         initWebViewSettings();
         initWebView();
     }
+
     /*
      * 设置WebView加载的url，设置其WebViewClient
      */
@@ -87,11 +89,13 @@ public class ShowDetailActivity extends BaseActivity {
      * 从SharedPreferences读取FoatingActionButton的状态
      */
     private void initFabState() {
-        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME,MODE_PRIVATE);
-        if(spf.getString(resultsBean.getId(),"") != null){
+        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, MODE_PRIVATE);
+        Log.e(TAG, spf.getString(resultsBean.getId(), ""));
+        if (!spf.getString(resultsBean.getId(), "").equals("")) {
             fab.setImageResource(R.drawable.ic_fab_pressed);
             isCollection = true;
-        }else{
+        } else {
+            fab.setImageResource(R.drawable.ic_fab_normal);
             isCollection = false;
         }
     }
@@ -139,7 +143,7 @@ public class ShowDetailActivity extends BaseActivity {
     public void collection(View view) {
         SharedPreferences.Editor editor = spf.edit();
         if (!isCollection) {
-            editor.putString(resultsBean.getId(),resultsBean.getUrl());
+            editor.putString(resultsBean.getId(), resultsBean.getUrl());
             fab.setImageResource(R.drawable.ic_fab_pressed);
             showShortSnackbar(view, getString(R.string.collection_success));
             isCollection = true;
