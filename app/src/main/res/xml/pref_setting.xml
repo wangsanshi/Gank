@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:layout="@layout/pref_category_widget"
+        android:title="@string/setting_basic_msg">
+
+        <Preference
+            android:layout="@layout/pref_item"
+            android:summary="@string/app_name"
+            android:title="@string/setting_app_name" />
+
+        <Preference
+            android:layout="@layout/pref_item"
+            android:summary="@string/setting_version_default"
+            android:title="@string/setting_version_msg" />
+    </PreferenceCategory>
+    
+</PreferenceScreen>

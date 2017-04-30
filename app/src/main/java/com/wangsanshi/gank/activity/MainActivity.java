@@ -43,10 +43,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initParams() {
-        setSupportActionBar(toolbar);
+        initToolbar();
+        initNavigation();
+        initDrawer();
+        initAdapter();
+    }
 
+    private void initNavigation() {
         nvMain.setNavigationItemSelectedListener(new NavigationItemSelected());
+    }
 
+    private void initDrawer() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
                 dlMain,
@@ -55,7 +62,13 @@ public class MainActivity extends BaseActivity {
                 R.string.navigation_drawer_close);
         dlMain.setDrawerListener(toggle);
         toggle.syncState();
+    }
 
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+    }
+
+    private void initAdapter() {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mSectionsPagerAdapter.addTitle(getString(R.string.welfare));
