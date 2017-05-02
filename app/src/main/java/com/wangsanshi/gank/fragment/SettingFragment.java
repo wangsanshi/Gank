@@ -1,11 +1,15 @@
 package com.wangsanshi.gank.fragment;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.design.widget.Snackbar;
 
 import com.wangsanshi.gank.R;
 
-public class SettingFragment extends PreferenceFragment {
+public class SettingFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,6 +21,51 @@ public class SettingFragment extends PreferenceFragment {
     }
 
     private void initParams() {
+        initClearCachePref();
+        initQqPref();
+    }
 
+    private void initQqPref() {
+        findPreference(getString(R.string.setting_qq_key))
+                .setOnPreferenceClickListener(this);
+    }
+
+    private void initClearCachePref() {
+        findPreference(getString(R.string.setting_clear_cache_key))
+                .setOnPreferenceClickListener(this);
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        switch (preference.getKey()) {
+            case "qq":
+                copy(getActivity(), preference.getSummary().toString());
+                Snackbar.make(getActivity().findViewById(R.id.cl_setting)
+                        , getString(R.string.copy_success)
+                        , Snackbar.LENGTH_SHORT).show();
+                break;
+
+            case "clear_cache":
+
+                break;
+
+            default:
+                break;
+        }
+        return false;
+    }
+
+    private void showSnackbar() {
+
+    }
+
+    /*
+     * 复制到剪贴板
+     */
+    @SuppressWarnings("deprecation")
+    private void copy(Context context, String content) {
+        ClipboardManager clipboardManager = (ClipboardManager) context
+                .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboardManager.setText(content.trim());
     }
 }
