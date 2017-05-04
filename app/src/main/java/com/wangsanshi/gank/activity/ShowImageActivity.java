@@ -2,16 +2,18 @@ package com.wangsanshi.gank.activity;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,6 +50,8 @@ public class ShowImageActivity extends BaseActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
 
+    private static final int GET_RESPONSE_BODY = 1;
+
     public static final String COLLECTION_SPF_NAME = "collection";
 
     @BindView(R.id.iv_content_show)
@@ -71,9 +75,19 @@ public class ShowImageActivity extends BaseActivity {
 
     private String imagePath;
 
-    private ResponseBody body;
+    private ResponseBody responseBody;
 
-    private final Handler mHandler = new Handler();
+    private ProgressDialog progressDialog;
+
+    private final Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == GET_RESPONSE_BODY) {
+                new SaveImageToDiskTask().execute(responseBody);
+            }
+            return false;
+        }
+    });
 
     private final Runnable hideRunnable = new Runnable() {
         @Override
@@ -104,19 +118,33 @@ public class ShowImageActivity extends BaseActivity {
     @Override
     public void initParams() {
         resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_WELFARE);
+        initActionBar();
+        initIvContent();
+        initLlContent();
+    }
 
+    /*
+     * 初始化分享、收藏、分享三个按钮的状态
+     */
+    private void initLlContent() {
         mVisible = false;
         llContent.setVisibility(View.GONE);
+    }
+
+    private void initIvContent() {
         Glide.with(getApplicationContext())
                 .load(resultsBean.getUrl())
                 .into(ivContent);
 
+        ivContent.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+    }
+
+    private void initActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
-        ivContent.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
     @OnClick(R.id.fl_show)
@@ -124,19 +152,16 @@ public class ShowImageActivity extends BaseActivity {
         toggle();
     }
 
+    /*
+     * 分享图片
+     */
     @OnClick(R.id.btn_share_show)
     public void share(View view) {
-        if (NetworkUtil.networkIsConnected(this)) {
-            downLoadImageToDisk(resultsBean.getUrl());
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            Uri uri = android.net.Uri.fromFile(new File(imagePath));
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.setType("image/*");
-            Log.e(TAG, imagePath);
-            startActivity(Intent.createChooser(intent, "share"));
-        } else {
-            showShortToast(getString(R.string.network_not_connected));
-        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, resultsBean.getDesc());
+        intent.putExtra(Intent.EXTRA_TEXT, resultsBean.getUrl());
+        startActivity(Intent.createChooser(intent, getString(R.string.share)));
     }
 
     @OnClick(R.id.btn_collection_show)
@@ -150,8 +175,7 @@ public class ShowImageActivity extends BaseActivity {
     @OnClick(R.id.btn_download_show)
     public void download(View view) {
         if (NetworkUtil.networkIsConnected(this)) {
-            downLoadImageToDisk(resultsBean.getUrl());
-            showShortToast(getString(R.string.download_success));
+            downLoadImage(resultsBean.getUrl());
         } else {
             showShortToast(getString(R.string.network_not_connected));
         }
@@ -160,7 +184,7 @@ public class ShowImageActivity extends BaseActivity {
     /*
      * 下载图片
      */
-    private void downLoadImageToDisk(String imageUrl) {
+    private void downLoadImage(String imageUrl) {
         GankApiService service = RetrofitUtil.getRetrofit().create(GankApiService.class);
         Call<ResponseBody> call = service.downLoadImage(imageUrl);
 
@@ -173,8 +197,8 @@ public class ShowImageActivity extends BaseActivity {
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE);
                 } else {
-                    body = response.body();
-                    saveImage(body);
+                    responseBody = response.body();
+                    mHandler.sendEmptyMessage(GET_RESPONSE_BODY);
                 }
             }
 
@@ -185,52 +209,11 @@ public class ShowImageActivity extends BaseActivity {
         });
     }
 
-    /*
-     * 将下载的图片保存到SD卡
-     */
-    private void saveImage(ResponseBody body) {
-        imagePath = getExternalFilesDir(null) + File.separator + resultsBean.getId() + ".jpg";
-        File imageFile = new File(imagePath);
-        Log.e(TAG, getExternalFilesDir(null) + File.separator + resultsBean.getId() + ".jpg");
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            inputStream = body.byteStream();
-            outputStream = new FileOutputStream(imageFile);
-
-            int temp;
-
-            while ((temp = inputStream.read()) != -1) {
-                outputStream.write(temp);
-            }
-
-            outputStream.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveImage(body);
+                mHandler.sendEmptyMessage(GET_RESPONSE_BODY);
             } else {
                 showShortToast(getString(R.string.permission_deny));
             }
@@ -267,6 +250,83 @@ public class ShowImageActivity extends BaseActivity {
         mHandler.removeCallbacks(hideRunnable);
         mHandler.postDelayed(showRunnable, UI_ANIMATION_DELAY);
         mVisible = true;
+    }
+
+
+    private class SaveImageToDiskTask extends AsyncTask<ResponseBody, Integer, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            initDialog();
+            progressDialog.show();
+            progressDialog.setProgress(0);
+            imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    + File.separator
+                    + resultsBean.getId()
+                    + ".jpg";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progressDialog.setProgress(values[0]);
+        }
+
+        @Override
+        protected Boolean doInBackground(ResponseBody... params) {
+            ResponseBody body = params[0];
+            File imageFile = new File(imagePath);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            long imageFileLength = body.contentLength();
+
+            try {
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(imageFile);
+
+                int temp, progress;
+                long saveTotalLength = 0;
+                while ((temp = inputStream.read()) != -1) {
+                    ++saveTotalLength;
+                    outputStream.write(temp);
+                    progress = (int) ((saveTotalLength / (float) imageFileLength) * 100);
+                    publishProgress(progress);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            showShortToast(getString(R.string.download_success));
+            progressDialog.dismiss();
+        }
+    }
+
+    private void initDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMax(100);
+        progressDialog.setTitle("提示");
+        progressDialog.setMessage("正在下载....");
     }
 
 }

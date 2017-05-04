@@ -120,8 +120,9 @@ public class ShowDetailActivity extends BaseActivity {
         //设置缓存模式
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);
+        settings.setDomStorageEnabled(true);//开启DOM缓存
         settings.setAppCachePath(webView.getContext().getCacheDir().getAbsolutePath());
 
         //设置可访问文件

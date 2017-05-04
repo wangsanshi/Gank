@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.nav_today:
-
+                    dlMain.closeDrawers();
                     break;
 
                 case R.id.nav_collection:

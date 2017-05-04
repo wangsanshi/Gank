@@ -34,7 +34,7 @@
         <Preference
             android:layout="@layout/pref_item"
             android:summary="@string/setting_api_value"
-            android:title="@string/setting_api">
+            android:title="@string/settting_data_source">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/setting_api_value" />
