@@ -5,7 +5,6 @@ import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.entity.GeneralBean;
+import com.wangsanshi.gank.util.Utility;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,6 +55,7 @@ public class ShowDetailActivity extends BaseActivity {
     @Override
     public void initParams() {
         resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_GENERAL);
+        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, MODE_PRIVATE);
 
         initFabState();
         initToolBar();
@@ -89,9 +90,7 @@ public class ShowDetailActivity extends BaseActivity {
      * 从SharedPreferences读取FoatingActionButton的状态
      */
     private void initFabState() {
-        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, MODE_PRIVATE);
-        Log.e(TAG, spf.getString(resultsBean.getId(), ""));
-        if (!spf.getString(resultsBean.getId(), "").equals("")) {
+        if (Utility.checkMsgIsCollected(spf, resultsBean.getId())) {
             fab.setImageResource(R.drawable.ic_fab_pressed);
             isCollection = true;
         } else {
@@ -142,19 +141,17 @@ public class ShowDetailActivity extends BaseActivity {
 
     @OnClick(R.id.fab_show_detail)
     public void collection(View view) {
-        SharedPreferences.Editor editor = spf.edit();
         if (!isCollection) {
-            editor.putString(resultsBean.getId(), resultsBean.getUrl());
+            Utility.saveCollectionMsgToPref(spf, resultsBean);
             fab.setImageResource(R.drawable.ic_fab_pressed);
             showShortSnackbar(view, getString(R.string.collection_success));
             isCollection = true;
         } else {
-            editor.remove(resultsBean.getId());
+            Utility.removeCollectionMsg(spf, resultsBean.getId());
             fab.setImageResource(R.drawable.ic_fab_normal);
             showShortSnackbar(view, getString(R.string.cancel_collection));
             isCollection = false;
         }
-        editor.apply();
     }
 
     /*

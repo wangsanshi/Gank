@@ -42,6 +42,10 @@
         <activity
             android:name=".activity.SettingActivity"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".activity.CollectionActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

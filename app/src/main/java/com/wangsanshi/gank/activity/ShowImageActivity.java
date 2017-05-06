@@ -21,10 +21,11 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
-import com.wangsanshi.gank.entity.WelfareBean;
+import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
+import com.wangsanshi.gank.util.Utility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,13 +72,15 @@ public class ShowImageActivity extends BaseActivity {
 
     private boolean mVisible;
 
-    private WelfareBean.ResultsBean resultsBean;
+    private GeneralBean.ResultsBean resultsBean;
 
     private String imagePath;
 
     private ResponseBody responseBody;
 
     private ProgressDialog progressDialog;
+
+    private SharedPreferences spf;
 
     private final Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -118,6 +121,8 @@ public class ShowImageActivity extends BaseActivity {
     @Override
     public void initParams() {
         resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_WELFARE);
+        spf = getSharedPreferences(COLLECTION_SPF_NAME, MODE_PRIVATE);
+
         initActionBar();
         initIvContent();
         initLlContent();
@@ -164,12 +169,18 @@ public class ShowImageActivity extends BaseActivity {
         startActivity(Intent.createChooser(intent, getString(R.string.share)));
     }
 
+    /*
+     * 收藏图片，保存至SharePreferences
+     */
     @OnClick(R.id.btn_collection_show)
     public void collection(View view) {
-        SharedPreferences.Editor editor = getSharedPreferences(COLLECTION_SPF_NAME, MODE_PRIVATE).edit();
-        editor.putString(resultsBean.getId(), resultsBean.getUrl());
-        editor.apply();
-        showShortToast(getString(R.string.collection_success));
+        if (Utility.checkMsgIsCollected(spf, resultsBean.getId())) {
+            showShortToast(getString(R.string.already_collection));
+        } else {
+            Utility.saveCollectionMsgToPref(spf, resultsBean);
+            showShortToast(getString(R.string.collection_success));
+        }
+
     }
 
     @OnClick(R.id.btn_download_show)
@@ -257,8 +268,6 @@ public class ShowImageActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             initDialog();
-            progressDialog.show();
-            progressDialog.setProgress(0);
             imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                     + File.separator
                     + resultsBean.getId()
@@ -314,19 +323,24 @@ public class ShowImageActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            showShortToast(getString(R.string.download_success));
             progressDialog.dismiss();
+            showShortToast(getString(R.string.download_success));
         }
     }
 
+    /*
+     *初始化ProgressDialog
+     */
     private void initDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMax(100);
-        progressDialog.setTitle("提示");
-        progressDialog.setMessage("正在下载....");
+        progressDialog.setTitle(getString(R.string.dialog_prompt));
+        progressDialog.setMessage(getString(R.string.dialog_downloading));
+        progressDialog.setProgress(0);
+        progressDialog.show();
     }
 
 }

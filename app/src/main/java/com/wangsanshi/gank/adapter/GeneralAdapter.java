@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.activity.ShowDetailActivity;
 import com.wangsanshi.gank.entity.GeneralBean;
-import com.wangsanshi.gank.util.CharacterUtil;
+import com.wangsanshi.gank.util.Utility;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
         if (mDatas.get(page).getResults().get(positionInPage).getWho() != null) {
             holder.itemTvWho.setText(mContext.getString(R.string.item_who_format,
                     mDatas.get(page).getResults().get(positionInPage).getWho(),
-                    CharacterUtil.timeFormat(mDatas.get(page).getResults().get(positionInPage).getPublishedAt())));
+                    Utility.timeFormat(mDatas.get(page).getResults().get(positionInPage).getPublishedAt())));
         } else {
-            holder.itemTvWho.setText(CharacterUtil
+            holder.itemTvWho.setText(Utility
                     .timeFormat(mDatas.get(page)
                             .getResults()
                             .get(positionInPage)

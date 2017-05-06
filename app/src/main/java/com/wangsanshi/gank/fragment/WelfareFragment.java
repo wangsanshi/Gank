@@ -14,7 +14,7 @@ import com.google.gson.JsonObject;
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.activity.ShowImageActivity;
 import com.wangsanshi.gank.adapter.WelfareRvAdapter;
-import com.wangsanshi.gank.entity.WelfareBean;
+import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
@@ -31,19 +31,15 @@ import retrofit2.Response;
 public class WelfareFragment extends BaseFragment {
     private static final String TAG = "WelfareFragment";
 
-    public static final String IMAGE_URL = "image_url";
-
-    public static final String IMAGE_ID = "image_id";
-
     private static final int DEFAULT_WELFARE_ITEM_COUNT = 10;
 
     private static final int DEFAULT_WELFARE_PAGE = 1;
 
     private static int page = 1;
 
-    private WelfareBean.ResultsBean resultsBean;
+    private GeneralBean.ResultsBean resultsBean;
 
-    private List<WelfareBean> datas;
+    private List<GeneralBean> datas;
 
     private WelfareRvAdapter adapter;
 
@@ -131,8 +127,8 @@ public class WelfareFragment extends BaseFragment {
     private void setRvData(String result) {
         srlWelfare.setRefreshing(false);
         Gson gson = new Gson();
-        WelfareBean welfareBean = gson.fromJson(result, WelfareBean.class);
-        datas.add(welfareBean);
+        GeneralBean generalBean = gson.fromJson(result, GeneralBean.class);
+        datas.add(generalBean);
         for (int i = (datas.size() - 1) * 10; i < datas.size() * 10; i++) {
             adapter.notifyItemInserted(i);
         }

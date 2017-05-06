@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initNavigation() {
+        nvMain.setCheckedItem(R.id.nav_today);
         nvMain.setNavigationItemSelectedListener(new NavigationItemSelected());
     }
 
@@ -113,18 +114,22 @@ public class MainActivity extends BaseActivity {
     private class NavigationItemSelected implements NavigationView.OnNavigationItemSelectedListener {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Intent intent = new Intent();
             switch (item.getItemId()) {
                 case R.id.nav_today:
                     dlMain.closeDrawers();
                     break;
 
                 case R.id.nav_collection:
-
+                    intent.setClass(MainActivity.this, CollectionActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_pull_in_right, R.anim.activity_push_out_left);
                     break;
 
                 case R.id.nav_setting:
-                    Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                    intent.setClass(MainActivity.this, SettingActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.activity_pull_in_right, R.anim.activity_push_out_left);
                     break;
 
                 default:

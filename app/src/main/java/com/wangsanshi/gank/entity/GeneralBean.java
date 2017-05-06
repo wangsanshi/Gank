@@ -2,6 +2,7 @@ package com.wangsanshi.gank.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -56,7 +57,8 @@ public class GeneralBean {
         private String url;
         private boolean used;
         private String who;
-        private List<String> images;
+        @Nullable
+        private List<String> images;//该字段在type为福利的时候可以为空
 
         public String getId() {
             return id;

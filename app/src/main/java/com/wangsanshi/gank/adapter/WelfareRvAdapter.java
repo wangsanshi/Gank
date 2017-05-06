@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
-import com.wangsanshi.gank.entity.WelfareBean;
+import com.wangsanshi.gank.entity.GeneralBean;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ public class WelfareRvAdapter extends RecyclerView.Adapter<WelfareRvAdapter.Welf
     private OnItemClickListener onItemClickListener;
 
     private Context mContext;
-    private List<WelfareBean> mDatas;
+    private List<GeneralBean> mDatas;
     private LayoutInflater mInflater;
 
-    public WelfareRvAdapter(Context context, List<WelfareBean> datas) {
+    public WelfareRvAdapter(Context context, List<GeneralBean> datas) {
         this.mContext = context;
         this.mDatas = datas;
         this.mInflater = LayoutInflater.from(context);

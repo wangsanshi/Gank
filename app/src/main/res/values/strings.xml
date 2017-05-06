@@ -23,6 +23,7 @@
     <string name="network_not_connected">网络连接不可用</string>
     <string name="collection_success">收藏成功</string>
     <string name="cancel_collection">取消收藏</string>
+    <string name="already_collection">已经被收藏</string>
     <string name="download_failure">下载失败</string>
     <string name="download_success">下载成功</string>
     <string name="permission_deny">请求被拒绝</string>
@@ -45,9 +46,17 @@
     <string name="setting_cache_default_value">0KB</string>
     <string name="setting_clear_cache_key">clear_cache</string>
     <string name="setting_qq_key">qq</string>
+    <string name="setting_version_key">version</string>
     <string name="settting_data_source">干货集中营</string>
 
+    <string name="dialog_prompt">提示</string>
+    <string name="dialog_downloading">正在下载.....</string>
+
     <string name="copy_success">已经复制到剪贴板</string>
+
+    <string name="email">forwlwork@gmail.com</string>
+
+    <string name="format_collection_pref">%1$s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -2,6 +2,7 @@ package com.wangsanshi.gank.fragment;
 
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -23,6 +24,23 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
     private void initParams() {
         initClearCachePref();
         initQqPref();
+        initVersionPref();
+    }
+
+    /*
+     * 得到当前的版本信息
+     */
+    private void initVersionPref() {
+        String versionName = "";
+        try {
+            versionName = getActivity()
+                    .getPackageManager()
+                    .getPackageInfo(getActivity().getPackageName(), 0)
+                    .versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        findPreference(getString(R.string.setting_version_key)).setSummary(versionName);
     }
 
     private void initQqPref() {

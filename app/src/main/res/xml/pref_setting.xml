@@ -13,8 +13,8 @@
             android:title="@string/setting_app_name" />
 
         <Preference
+            android:key="@string/setting_version_key"
             android:layout="@layout/pref_item"
-            android:summary="@string/setting_version_default"
             android:title="@string/setting_version_msg" />
     </PreferenceCategory>
 

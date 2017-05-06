@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_setting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:background="#7FFFFFFF">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/tb_setting"
+        android:id="@+id/tb_collection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         app:navigationIcon="@drawable/ic_toolbar_back"
-        app:title="@string/setting"
+        app:title="@string/collection"
         app:titleTextColor="@color/white" />
 
-    <FrameLayout
-        android:id="@+id/fl_setting"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/frame_layout_margin_top" />
-
+        android:layout_marginTop="@dimen/frame_layout_margin_top"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
 </android.support.design.widget.CoordinatorLayout>

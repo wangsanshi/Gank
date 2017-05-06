@@ -36,14 +36,21 @@ public class SettingActivity extends BaseActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+                finishActivity();
             }
         });
     }
 
     @Override
     public void onBackPressed() {
+        finishActivity();
+    }
+
+    /*
+     * 退出当前Activity
+     */
+    private void finishActivity() {
         finish();
+        overridePendingTransition(R.anim.activity_pull_in_left, R.anim.activity_push_out_right);
     }
 }
