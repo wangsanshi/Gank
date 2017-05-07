@@ -2,11 +2,20 @@ package com.wangsanshi.gank.entity;
 
 
 public class CollectionBean {
-
+    private String id;
     private String type;
     private String date;
     private String title;
     private String url;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+
+        return id;
+    }
 
     public String getType() {
         return type;

@@ -16,6 +16,7 @@ import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.adapter.SectionsPagerAdapter;
 import com.wangsanshi.gank.fragment.GeneralFragment;
 import com.wangsanshi.gank.fragment.WelfareFragment;
+import com.wangsanshi.gank.util.ActivityUtil;
 
 import butterknife.BindView;
 
@@ -122,14 +123,12 @@ public class MainActivity extends BaseActivity {
 
                 case R.id.nav_collection:
                     intent.setClass(MainActivity.this, CollectionActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.activity_pull_in_right, R.anim.activity_push_out_left);
+                    ActivityUtil.startActivityWithPullAnim(MainActivity.this, intent);
                     break;
 
                 case R.id.nav_setting:
                     intent.setClass(MainActivity.this, SettingActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.activity_pull_in_right, R.anim.activity_push_out_left);
+                    ActivityUtil.startActivityWithPullAnim(MainActivity.this, intent);
                     break;
 
                 default:

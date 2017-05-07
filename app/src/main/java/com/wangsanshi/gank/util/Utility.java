@@ -17,7 +17,7 @@ public class Utility {
     /*
      * 计算发布时间距离当前时间的长度
      */
-    public static String timeFormat(String date) {
+    public static String timeFormat(@NonNull String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS");
         Calendar calendar = Calendar.getInstance();
 
@@ -82,6 +82,7 @@ public class Utility {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         CollectionBean collectionBean = new CollectionBean();
+        collectionBean.setId(generalBean.getId());
         collectionBean.setType(generalBean.getType());
         collectionBean.setDate(getCurrentDate());
         collectionBean.setTitle(generalBean.getDesc());
@@ -104,11 +105,11 @@ public class Utility {
     }
 
     /*
-     * 根据is检查当前的信息是否已经被收藏
+     * 根据id检查当前的信息是否已经被收藏
      * @return 返回检查的结果，true为已经被收藏，false为没有被收藏
      */
     public static boolean checkMsgIsCollected(@NonNull SharedPreferences sharedPreferences
             , @NonNull String id) {
-        return !(sharedPreferences.getStringSet(id, null) == null);
+        return !(sharedPreferences.getString(id, "").equals(""));
     }
 }

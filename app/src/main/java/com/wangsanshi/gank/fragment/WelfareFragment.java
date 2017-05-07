@@ -17,6 +17,7 @@ import com.wangsanshi.gank.adapter.WelfareRvAdapter;
 import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
+import com.wangsanshi.gank.util.ActivityUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
 import com.wangsanshi.gank.util.ViewUtil;
 
@@ -108,8 +109,7 @@ public class WelfareFragment extends BaseFragment {
                 Intent intent = new Intent(getActivity(), ShowImageActivity.class);
                 resultsBean = datas.get(position / DEFAULT_WELFARE_ITEM_COUNT).getResults().get(position % DEFAULT_WELFARE_ITEM_COUNT);
                 intent.putExtra(ShowImageActivity.DATAS_IN_WELFARE, resultsBean);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+                ActivityUtil.startActivityWithFadeAnim(getActivity(), intent);
             }
         });
     }

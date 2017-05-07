@@ -16,25 +16,25 @@
 
         <TextView
             android:id="@+id/item_tv_type_collection"
+            style="@style/TitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="16sp"
             tools:text="福利" />
 
         <TextView
             android:id="@+id/item_tv_date_collection"
+            style="@style/DateTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:textSize="12sp"
             tools:text="2017-2-18" />
 
         <TextView
             android:id="@+id/item_tv_title_collection"
+            style="@style/ContentTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_tv_type_collection"

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.entity.GeneralBean;
+import com.wangsanshi.gank.util.ActivityUtil;
 import com.wangsanshi.gank.util.Utility;
 
 import butterknife.BindView;
@@ -162,8 +163,7 @@ public class ShowDetailActivity extends BaseActivity {
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
-            finish();
-            overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+            ActivityUtil.finishActivityWithFadeAnim(this);
         }
     }
 

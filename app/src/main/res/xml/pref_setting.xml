@@ -24,7 +24,6 @@
         <Preference
             android:key="@string/setting_clear_cache_key"
             android:layout="@layout/pref_item"
-            android:summary="@string/setting_cache_default_value"
             android:title="@string/setting_clear_cache" />
     </PreferenceCategory>
 

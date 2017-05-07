@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.fragment.SettingFragment;
+import com.wangsanshi.gank.util.ActivityUtil;
 
 import butterknife.BindView;
 
@@ -36,21 +37,14 @@ public class SettingActivity extends BaseActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishActivity();
+                onBackPressed();
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        finishActivity();
+        ActivityUtil.finishActivityWithPushAnim(this);
     }
 
-    /*
-     * 退出当前Activity
-     */
-    private void finishActivity() {
-        finish();
-        overridePendingTransition(R.anim.activity_pull_in_left, R.anim.activity_push_out_right);
-    }
 }

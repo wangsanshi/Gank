@@ -24,6 +24,7 @@ import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
+import com.wangsanshi.gank.util.ActivityUtil;
 import com.wangsanshi.gank.util.NetworkUtil;
 import com.wangsanshi.gank.util.Utility;
 
@@ -233,8 +234,7 @@ public class ShowImageActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
+        ActivityUtil.finishActivityWithFadeAnim(this);
     }
 
     private void toggle() {
