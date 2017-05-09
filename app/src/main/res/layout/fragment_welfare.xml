@@ -15,4 +15,11 @@
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <include
+        android:id="@+id/network_error_welfare"
+        layout="@layout/layout_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </RelativeLayout>

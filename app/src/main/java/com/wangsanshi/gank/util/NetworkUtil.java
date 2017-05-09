@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 public class NetworkUtil {
     /*
      * 检查网络是否可用
+     * @param 上下文Context
+     * @return true为网络连接,false
      */
     public static boolean networkIsConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context

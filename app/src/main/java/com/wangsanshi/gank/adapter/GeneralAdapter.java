@@ -12,17 +12,13 @@ import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.activity.ShowDetailActivity;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.util.Utility;
 
 import java.util.List;
 
 public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.GenneralViewHolder> {
-    /*
-     * 默认每页加载5个子项
-     */
-    public static final int DEFAULT_ITEM_COUNT = 5;
-
     private LayoutInflater inflater;
     private Context mContext;
     private List<GeneralBean> mDatas;
@@ -41,8 +37,8 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
     @Override
     public void onBindViewHolder(GenneralViewHolder holder, int position) {
         holder.setIsRecyclable(false);
-        final int page = position / DEFAULT_ITEM_COUNT;
-        final int positionInPage = position % DEFAULT_ITEM_COUNT;
+        final int page = position / Constant.DEFAULT_LOAD_GENERAL_ITEM_COUNT;
+        final int positionInPage = position % Constant.DEFAULT_LOAD_GENERAL_ITEM_COUNT;
 
         holder.itemTvDesc.setText(mDatas.get(page).getResults().get(positionInPage).getDesc());
         if (mDatas.get(page).getResults().get(positionInPage).getWho() != null) {
@@ -62,7 +58,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ShowDetailActivity.class);
                 GeneralBean.ResultsBean resultsBean = mDatas.get(page).getResults().get(positionInPage);
-                intent.putExtra(ShowDetailActivity.DATAS_IN_GENERAL, resultsBean);
+                intent.putExtra(Constant.DATAS_IN_GENERAL, resultsBean);
                 mContext.startActivity(intent);
                 Activity activity = (Activity) mContext;
                 activity.overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
@@ -72,7 +68,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.Genneral
 
     @Override
     public int getItemCount() {
-        return mDatas.size() * DEFAULT_ITEM_COUNT;
+        return mDatas.size() * Constant.DEFAULT_LOAD_GENERAL_ITEM_COUNT;
     }
 
     public class GenneralViewHolder extends RecyclerView.ViewHolder {

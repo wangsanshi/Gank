@@ -10,6 +10,7 @@ import com.wangsanshi.gank.R;
 public class ActivityUtil {
     /*
      * 以淡入淡出的方式结束当前Activity
+     * @param Activity
      */
     public static void finishActivityWithFadeAnim(@NonNull Activity activity) {
         activity.finish();
@@ -18,6 +19,8 @@ public class ActivityUtil {
 
     /*
      * 以淡入淡出的方式启动Activity
+     * @param Activity
+     * @param Intent
      */
     public static void startActivityWithFadeAnim(@NonNull Activity activity, @NonNull Intent intent) {
         activity.startActivity(intent);
@@ -26,6 +29,7 @@ public class ActivityUtil {
 
     /*
      * 以拉入拉出的方式结束Activity
+     * @param Activity
      */
     public static void finishActivityWithPushAnim(@NonNull Activity activity) {
         activity.finish();
@@ -34,6 +38,8 @@ public class ActivityUtil {
 
     /*
      * 以拉入拉出的方式启动Activity
+     * @param Activity
+     * @param Intent
      */
     public static void startActivityWithPullAnim(@NonNull Activity activity, @NonNull Intent intent) {
         activity.startActivity(intent);

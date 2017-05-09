@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.retrofit.GankApiService;
 import com.wangsanshi.gank.retrofit.RetrofitUtil;
@@ -42,7 +43,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ShowImageActivity extends BaseActivity {
-    private static final String TAG = "ShowImageActivity";
     /*
      * 动画的延迟时间
      */
@@ -53,8 +53,6 @@ public class ShowImageActivity extends BaseActivity {
     private static final int PERMISSION_REQUEST_CODE = 0;
 
     private static final int GET_RESPONSE_BODY = 1;
-
-    public static final String COLLECTION_SPF_NAME = "collection";
 
     @BindView(R.id.iv_content_show)
     ImageView ivContent;
@@ -122,7 +120,7 @@ public class ShowImageActivity extends BaseActivity {
     @Override
     public void initParams() {
         resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_WELFARE);
-        spf = getSharedPreferences(COLLECTION_SPF_NAME, MODE_PRIVATE);
+        spf = getSharedPreferences(Constant.COLLECTION_SPF_NAME, MODE_PRIVATE);
 
         initActionBar();
         initIvContent();
@@ -221,8 +219,13 @@ public class ShowImageActivity extends BaseActivity {
         });
     }
 
+    /*
+     * 请求权限回调
+     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode
+            , @NonNull String[] permissions
+            , @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mHandler.sendEmptyMessage(GET_RESPONSE_BODY);

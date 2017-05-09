@@ -6,10 +6,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitUtil {
-    public static final int RESPONSE_SUCCESS = 0;
-
     private static Retrofit retrofit;
 
+    /*
+     * 得到Retrofit的实例
+     * @return Retrofit的实例
+     */
     public static Retrofit getRetrofit() {
         if (retrofit == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();

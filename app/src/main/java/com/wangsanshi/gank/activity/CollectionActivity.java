@@ -13,6 +13,7 @@ import com.wangsanshi.gank.ItemTouchHelperCallback;
 import com.wangsanshi.gank.R;
 import com.wangsanshi.gank.adapter.CollectionRvAdapter;
 import com.wangsanshi.gank.entity.CollectionBean;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.util.ActivityUtil;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import java.util.Map;
 import butterknife.BindView;
 
 public class CollectionActivity extends BaseActivity {
-    private static final String TAG = "CollectionActivity";
     @BindView(R.id.rv_collection)
     RecyclerView recyclerView;
 
@@ -50,26 +50,35 @@ public class CollectionActivity extends BaseActivity {
         initRecyclerView();
     }
 
+    /*
+     * 设置RecyclerView和EmptyView是否可见
+     */
     private void initViewState() {
         if (datas.size() == 0) {
-            tvEmptyData.setVisibility(View.VISIBLE);
+            tvEmptyData.setVisibility(View.VISIBLE);//当无数据时，显示EmptyView
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);//当有数据时，显示RecyclerView
         }
     }
 
+    /*
+     * 从SharedPreferences获取已经收藏的数据
+     */
     private void initDatas() {
-        SharedPreferences spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, MODE_PRIVATE);
+        SharedPreferences spf = getSharedPreferences(Constant.COLLECTION_SPF_NAME, MODE_PRIVATE);
         datas = new ArrayList<>();
         Gson gson = new Gson();
 
-        Map<String, String> allDatas = (Map<String, String>) spf.getAll();
-        for (Map.Entry<String, String> me : allDatas.entrySet()) {
-            CollectionBean collectionBean = gson.fromJson(me.getValue(), CollectionBean.class);
+        Map<String, ?> allDatas = spf.getAll();
+        for (Map.Entry<String, ?> me : allDatas.entrySet()) {
+            CollectionBean collectionBean = gson.fromJson(me.getValue().toString(), CollectionBean.class);
             datas.add(collectionBean);
         }
     }
 
+    /*
+     * 初始化RecyclerView
+     */
     private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

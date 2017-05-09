@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.entity.GeneralBean;
 
 import java.util.List;
@@ -35,7 +36,11 @@ public class WelfareRvAdapter extends RecyclerView.Adapter<WelfareRvAdapter.Welf
     public void onBindViewHolder(final WelfareViewHolder holder, final int position) {
         holder.setIsRecyclable(false);
         Glide.with(mContext)
-                .load(mDatas.get(position / 10).getResults().get(position % 10).getUrl())
+                .load(mDatas
+                        .get(position / Constant.DEFAULT_LOAD_WELFARE_ITEM_COUNT)
+                        .getResults()
+                        .get(position % Constant.DEFAULT_LOAD_WELFARE_ITEM_COUNT)
+                        .getUrl())
                 .dontAnimate()
                 .into(holder.imageView);
 
@@ -51,7 +56,7 @@ public class WelfareRvAdapter extends RecyclerView.Adapter<WelfareRvAdapter.Welf
 
     @Override
     public int getItemCount() {
-        return mDatas.size() * 10;
+        return mDatas.size() * Constant.DEFAULT_LOAD_WELFARE_ITEM_COUNT;
     }
 
     public class WelfareViewHolder extends RecyclerView.ViewHolder {

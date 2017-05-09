@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
-import com.wangsanshi.gank.activity.ShowImageActivity;
 import com.wangsanshi.gank.entity.CollectionBean;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.util.Utility;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class CollectionRvAdapter extends RecyclerView.Adapter<CollectionRvAdapte
 
     @Override
     public void onItemRemove(int position) {
-        Utility.removeCollectionMsg(mContext.getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, Context.MODE_PRIVATE),
+        Utility.removeCollectionMsg(mContext.getSharedPreferences(Constant.COLLECTION_SPF_NAME, Context.MODE_PRIVATE),
                 mDatas.get(position).getId());
         mDatas.remove(position);
         notifyItemRemoved(position);
@@ -69,6 +69,8 @@ public class CollectionRvAdapter extends RecyclerView.Adapter<CollectionRvAdapte
             itemTvDate = (TextView) itemView.findViewById(R.id.item_tv_date_collection);
             itemTVTitle = (TextView) itemView.findViewById(R.id.item_tv_title_collection);
             itemTvUrl = (TextView) itemView.findViewById(R.id.item_tv_url_collection);
+
         }
     }
+
 }

@@ -7,14 +7,13 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private onItemRemoveListener listener;
 
-
     public ItemTouchHelperCallback(onItemRemoveListener listener) {
         this.listener = listener;
     }
 
     /*
-         * 设置拖动的方向以及侧滑的方向
-         */
+     * 设置拖动的方向以及侧滑的方向
+     */
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {

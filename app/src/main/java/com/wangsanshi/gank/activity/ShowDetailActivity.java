@@ -1,5 +1,6 @@
 package com.wangsanshi.gank.activity;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -13,6 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.wangsanshi.gank.R;
+import com.wangsanshi.gank.entity.Constant;
 import com.wangsanshi.gank.entity.GeneralBean;
 import com.wangsanshi.gank.util.ActivityUtil;
 import com.wangsanshi.gank.util.Utility;
@@ -21,10 +23,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class ShowDetailActivity extends BaseActivity {
-    private static final String TAG = "ShowDetailActivity";
-
-    public static final String DATAS_IN_GENERAL = "datas_in_general";
-
     @BindView(R.id.toolbar_show_detail)
     Toolbar toolbar;
 
@@ -55,8 +53,8 @@ public class ShowDetailActivity extends BaseActivity {
 
     @Override
     public void initParams() {
-        resultsBean = getIntent().getExtras().getParcelable(DATAS_IN_GENERAL);
-        spf = getSharedPreferences(ShowImageActivity.COLLECTION_SPF_NAME, MODE_PRIVATE);
+        resultsBean = getIntent().getExtras().getParcelable(Constant.DATAS_IN_GENERAL);
+        spf = getSharedPreferences(Constant.COLLECTION_SPF_NAME, MODE_PRIVATE);
 
         initFabState();
         initToolBar();
@@ -88,7 +86,7 @@ public class ShowDetailActivity extends BaseActivity {
     }
 
     /*
-     * 从SharedPreferences读取FoatingActionButton的状态
+     * 从SharedPreferences根据id读取是否有数据，并设置FoatingActionButton的状态
      */
     private void initFabState() {
         if (Utility.checkMsgIsCollected(spf, resultsBean.getId())) {
@@ -100,6 +98,7 @@ public class ShowDetailActivity extends BaseActivity {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebViewSettings() {
         WebSettings settings = webView.getSettings();
         //支持获取手势焦点

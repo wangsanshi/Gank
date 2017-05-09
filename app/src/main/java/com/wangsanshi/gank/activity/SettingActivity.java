@@ -29,11 +29,12 @@ public class SettingActivity extends BaseActivity {
                 .beginTransaction()
                 .replace(R.id.fl_setting, new SettingFragment())
                 .commit();
+
+
     }
 
     private void initToolbar() {
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
