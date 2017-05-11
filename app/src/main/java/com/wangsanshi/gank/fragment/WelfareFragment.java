@@ -130,11 +130,12 @@ public class WelfareFragment extends BaseFragment {
 
     private void initAdapter() {
         adapter = new WelfareRvAdapter(getActivity().getApplicationContext(), datas);
-
+        //为RecylerView的item添加点击事件
         adapter.setOnItemClickListener(new WelfareRvAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), ShowImageActivity.class);
+                //将当前item的数据传递到显示图片的Activity
                 resultsBean = datas.get(position / Constant.DEFAULT_LOAD_WELFARE_ITEM_COUNT)
                         .getResults()
                         .get(position % Constant.DEFAULT_LOAD_WELFARE_ITEM_COUNT);
@@ -177,6 +178,9 @@ public class WelfareFragment extends BaseFragment {
                 , getString(R.string.network_not_connected));
     }
 
+    /*
+     * 网络连接刷新数据
+     */
     private void refreshData() {
         if (viewNetworkError.getVisibility() == View.VISIBLE) {
             viewNetworkError.setVisibility(View.GONE);

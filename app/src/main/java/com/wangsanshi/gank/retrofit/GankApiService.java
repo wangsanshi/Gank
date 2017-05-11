@@ -15,10 +15,18 @@ public interface GankApiService {
      * @param type,请求数据的类型
      * @param count，请求数据的数量
      * @param page，请求数据的页数
+     * @return JsonObject，返回JsonObject对象
      */
     @GET("api/data/{type}/{count}/{page}")
-    Call<JsonObject> getResponse(@Path("type") String type, @Path("count") int count, @Path("page") int page);
+    Call<JsonObject> getResponse(@Path("type") String type
+            , @Path("count") int count
+            , @Path("page") int page);
 
+    /*
+     * 下载图片
+     * @param imageUrl，下载图片的url
+     * @return 返回响应体
+     */
     @GET
     Call<ResponseBody> downLoadImage(@Url String imageUrl);
 }

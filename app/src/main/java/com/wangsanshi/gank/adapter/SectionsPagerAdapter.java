@@ -22,15 +22,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-//        switch (position) {
-//            case 0:
-//                return fragments.get(0);
-//            case 1:
-//                return fragments.get(1);
-//            default:
-//                return fragments.get(2);
-//        }
-
         return fragments.get(position);
     }
 

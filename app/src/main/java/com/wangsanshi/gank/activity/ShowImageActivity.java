@@ -326,8 +326,10 @@ public class ShowImageActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            progressDialog.dismiss();
-            showShortToast(getString(R.string.download_success));
+            if (aBoolean) {
+                progressDialog.dismiss();
+                showShortToast(getString(R.string.download_success));
+            }
         }
     }
 

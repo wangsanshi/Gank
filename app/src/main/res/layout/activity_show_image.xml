@@ -12,8 +12,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:gravity="center"
-        android:keepScreenOn="true"
-        android:src="@mipmap/screenshot" />
+        android:keepScreenOn="true" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
+            android:background="@null"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 

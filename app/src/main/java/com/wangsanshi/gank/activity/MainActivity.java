@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.wangsanshi.gank.R;
@@ -104,12 +103,6 @@ public class MainActivity extends BaseActivity {
         } else {
             finish();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     private class NavigationItemSelected implements NavigationView.OnNavigationItemSelectedListener {

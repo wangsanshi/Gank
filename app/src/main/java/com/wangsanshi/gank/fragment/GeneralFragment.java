@@ -68,6 +68,9 @@ public class GeneralFragment extends BaseFragment {
         }
     });
 
+    /*
+     * 网络未连接显示错误信息
+     */
     private void showNetworkErrorMsg() {
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
@@ -80,6 +83,9 @@ public class GeneralFragment extends BaseFragment {
                 , getString(R.string.network_not_connected));
     }
 
+    /*
+     * 刷新数据
+     */
     private void refreshData() {
         if (viewNetworkError.getVisibility() == View.VISIBLE) {
             viewNetworkError.setVisibility(View.GONE);
@@ -96,6 +102,9 @@ public class GeneralFragment extends BaseFragment {
     public GeneralFragment() {
     }
 
+    /*
+     * 根据页面类型得到Fragment实例
+     */
     public static GeneralFragment newInstance(String fragmentType) {
         GeneralFragment generalFragment = new GeneralFragment();
         Bundle bundle = new Bundle();

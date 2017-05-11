@@ -17,8 +17,6 @@ import java.util.List;
 
 public class CollectionRvAdapter extends RecyclerView.Adapter<CollectionRvAdapter.CollectionViewHolder>
         implements com.wangsanshi.gank.onItemRemoveListener {
-    private static final String TAG = "CollectionRvAdapter";
-
     private List<CollectionBean> mDatas;
     private LayoutInflater mLnflater;
     private Context mContext;
@@ -69,7 +67,6 @@ public class CollectionRvAdapter extends RecyclerView.Adapter<CollectionRvAdapte
             itemTvDate = (TextView) itemView.findViewById(R.id.item_tv_date_collection);
             itemTVTitle = (TextView) itemView.findViewById(R.id.item_tv_title_collection);
             itemTvUrl = (TextView) itemView.findViewById(R.id.item_tv_url_collection);
-
         }
     }
 

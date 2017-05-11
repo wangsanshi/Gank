@@ -69,9 +69,10 @@ public class CollectionActivity extends BaseActivity {
         datas = new ArrayList<>();
         Gson gson = new Gson();
 
-        Map<String, ?> allDatas = spf.getAll();
+        Map<String, ?> allDatas = spf.getAll();//从SharedPreferences中读取收藏的所有数据
         for (Map.Entry<String, ?> me : allDatas.entrySet()) {
-            CollectionBean collectionBean = gson.fromJson(me.getValue().toString(), CollectionBean.class);
+            CollectionBean collectionBean = gson
+                    .fromJson(me.getValue().toString(), CollectionBean.class);
             datas.add(collectionBean);
         }
     }
