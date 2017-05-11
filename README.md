@@ -21,7 +21,7 @@
   * [应用宝-PC端](http://android.myapp.com/myapp/detail.htm?apkName=com.wangsanshi.gank)
   * [应用宝-移动端](http://a.app.qq.com/o/simple.jsp?pkgname=com.wangsanshi.gank)
   
-## 7、关于作者
+## 5、关于作者
 
   * Github：http://www.github.com/wangsanshi
   * Email：forwlwork@gmail.com
